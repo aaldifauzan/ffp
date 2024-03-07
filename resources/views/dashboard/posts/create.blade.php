@@ -42,19 +42,6 @@
                 </select>
             </div>
 
-            <div class="form-group">
-                <label for="exampleFormControlSelect3">Kecamatan</label>
-                <select class="form-control" id="kecamatan">
-
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="exampleFormControlSelect4">Kelurahan</label>
-                <select class="form-control" id="kelurahan">
-
-                </select>
-            </div>
             <div class="col-md-6">
                 <label for="category" class="form-label">Province</label>
                 <select class="form-select" name="category_id">

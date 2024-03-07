@@ -64,31 +64,7 @@ class DashboardPostController extends Controller
         echo $option;
     }
 
-    public function getkecamatan(request $request)
-    {
-        $id_kabupaten = $request->id_kabupaten;
 
-        $kecamatans = District::where('regency_id', $id_kabupaten)->get();
-
-        $option = "<option>Pilih Kecamatan..</option>";
-        foreach($kecamatans as $kecamatan){
-            $option.= "<option value='$kecamatan->id'>$kecamatan->name</option>";
-        }
-        echo $option;
-    }
-
-    public function getkelurahan(request $request)
-    {
-        $id_kecamatan = $request->id_kecamatan;
-
-        $kelurahans = Village::where('district_id', $id_kecamatan)->get();
-
-        $option = "<option>Pilih Kelurahan..</option>";
-        foreach($kelurahans as $kelurahan){
-            $option.= "<option value='$kelurahan->id'>$kelurahan->name</option>";
-        }
-        echo $option;
-    }
 
     /**
      * Store a newly created resource in storage.

@@ -77,5 +77,3 @@ Route::get('/dashboard/posts/checkSlug', [DashboardPostController::class], 'chec
 Route::resource('/dashboard/posts', DashboardPostController::class)->middleware('auth');
 
 Route::post('/getkabupaten', [DashboardPostController::class, 'getkabupaten'])->name('getkabupaten')->middleware('auth');
-Route::post('/getkecamatan', [DashboardPostController::class, 'getkecamatan'])->name('getkecamatan')->middleware('auth');
-Route::post('/getkelurahan', [DashboardPostController::class, 'getkelurahan'])->name('getkelurahan')->middleware('auth');

@@ -74,49 +74,6 @@
 
                 success: function(msg){
                     $('#kabupaten').html(msg);
-                    $('#kecamatan').html('');
-                    $('#kelurahan').html('');
-                },
-                error: function(data){
-                    console.log('error:',data)
-                },
-            })
-        })
-
-
-        $('#kabupaten').on('change', function(){
-            let id_kabupaten = $('#kabupaten').val();
-            // console.log(id_provinsi);
-
-            $.ajax({
-                type : 'POST',
-                url : "{{route('getkecamatan')}}",
-                data : {id_kabupaten:id_kabupaten},
-                cache : false,
-
-                success: function(msg){
-                    $('#kecamatan').html(msg);
-                    $('#kelurahan').html('');
-                },
-                error: function(data){
-                    console.log('error:',data)
-                },
-            })
-        })
-
-
-        $('#kecamatan').on('change', function(){
-            let id_kecamatan = $('#kecamatan').val();
-            // console.log(id_provinsi);
-
-            $.ajax({
-                type : 'POST',
-                url : "{{route('getkelurahan')}}",
-                data : {id_kecamatan:id_kecamatan},
-                cache : false,
-
-                success: function(msg){
-                    $('#kelurahan').html(msg);
                 },
                 error: function(data){
                     console.log('error:',data)
