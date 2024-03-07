@@ -56,9 +56,11 @@ class DashboardPostController extends Controller
 
         $kabupatens = Regency::where('province_id', $id_provinsi)->get();
 
+        $option = "<option>Pilih Kabupaten/Kota..</option>";
         foreach($kabupatens as $kabupaten){
-            echo "<option value='$kabupaten->id'>$kabupaten->name</option>";
+            $option.= "<option value='$kabupaten->id'>$kabupaten->name</option>";
         }
+        echo $option;
     }
 
     public function getkecamatan(request $request)
@@ -67,9 +69,11 @@ class DashboardPostController extends Controller
 
         $kecamatans = District::where('regency_id', $id_kabupaten)->get();
 
+        $option = "<option>Pilih Kecamatan..</option>";
         foreach($kecamatans as $kecamatan){
-            echo "<option value='$kecamatan->id'>$kecamatan->name</option>";
+            $option.= "<option value='$kecamatan->id'>$kecamatan->name</option>";
         }
+        echo $option;
     }
 
     public function getkelurahan(request $request)
@@ -78,9 +82,11 @@ class DashboardPostController extends Controller
 
         $kelurahans = Village::where('district_id', $id_kecamatan)->get();
 
+        $option = "<option>Pilih Kelurahan..</option>";
         foreach($kelurahans as $kelurahan){
-            echo "<option value='$kelurahan->id'>$kelurahan->name</option>";
+            $option.= "<option value='$kelurahan->id'>$kelurahan->name</option>";
         }
+        echo $option;
     }
 
     /**

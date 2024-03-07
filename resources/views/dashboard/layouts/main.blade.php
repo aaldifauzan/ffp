@@ -73,13 +73,15 @@
                 cache : false,
 
                 success: function(msg){
-                    $('#kabupaten').html(msg)
+                    $('#kabupaten').html(msg);
+                    $('#kecamatan').html('');
+                    $('#kelurahan').html('');
                 },
                 error: function(data){
                     console.log('error:',data)
-                }
+                },
             })
-        });
+        })
 
 
         $('#kabupaten').on('change', function(){
@@ -93,13 +95,14 @@
                 cache : false,
 
                 success: function(msg){
-                    $('#kecamatan').html(msg)
+                    $('#kecamatan').html(msg);
+                    $('#kelurahan').html('');
                 },
                 error: function(data){
                     console.log('error:',data)
-                }
+                },
             })
-        });
+        })
 
 
         $('#kecamatan').on('change', function(){
@@ -113,13 +116,13 @@
                 cache : false,
 
                 success: function(msg){
-                    $('#kelurahan').html(msg)
+                    $('#kelurahan').html(msg);
                 },
                 error: function(data){
                     console.log('error:',data)
-                }
+                },
             })
-        });
+        })
     });
 </script>
 

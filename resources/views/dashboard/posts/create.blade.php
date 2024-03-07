@@ -38,7 +38,6 @@
             <div class="form-group">
                 <label for="exampleFormControlSelect2">Kabupaten/Kota</label>
                 <select class="form-control" id="kabupaten">
-                    <option>Pilih Kabupaten/Kota..</option>
 
                 </select>
             </div>
@@ -46,7 +45,6 @@
             <div class="form-group">
                 <label for="exampleFormControlSelect3">Kecamatan</label>
                 <select class="form-control" id="kecamatan">
-                    <option>Pilih Kecamatan..</option>
 
                 </select>
             </div>
@@ -54,7 +52,6 @@
             <div class="form-group">
                 <label for="exampleFormControlSelect4">Kelurahan</label>
                 <select class="form-control" id="kelurahan">
-                    <option>Pilih Kelurahan..</option>
 
                 </select>
             </div>
