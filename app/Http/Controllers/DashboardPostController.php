@@ -57,7 +57,7 @@ class DashboardPostController extends Controller
 
         $kabupatens = Regency::where('province_id', $id_provinsi)->get();
 
-        $option = "<option>Pilih Kabupaten/Kota..</option>";
+        $option = "<option>-- Kabupaten/Kota --</option>";
         foreach($kabupatens as $kabupaten){
             $option.= "<option value='$kabupaten->id'>$kabupaten->name</option>";
         }

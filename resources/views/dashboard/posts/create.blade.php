@@ -27,8 +27,8 @@
 
             <div class="form-group">
                 <label for="exampleFormControlSelect1">Provinsi</label>
-                <select class="form-control" id="provinsi">
-                    <option>Pilih Provinsi..</option>
+                <select class="form-control" id="provinsi" name="provinsi" required>
+                    <option value="">-- Provinsi --</option>
                     @foreach ($provinces as $provinsi)
                         <option value="{{ $provinsi->id }}">{{ $provinsi->name }}</option>
                     @endforeach
@@ -153,6 +153,20 @@
         $('#datepicker').datepicker({
             format: 'dd-mm-yyyy',
         });
+    });
+</script>
+
+<script>
+    // Add an event listener to the form to validate province selection
+    document.getElementById('postForm').addEventListener('submit', function (event) {
+        const provinsi = document.getElementById('provinsi');
+        
+        if (provinsi.value === '') {
+            // Prevent form submission if province is not selected
+            event.preventDefault();
+            // Show the error message
+            provinsi.classList.add('is-invalid');
+        }
     });
 </script>
 

@@ -78,8 +78,9 @@
                 error: function(data){
                     console.log('error:',data)
                 },
-            })
-        })
+            });
+        });
+        $('#provinsi').trigger('change');
     });
 </script>
 
