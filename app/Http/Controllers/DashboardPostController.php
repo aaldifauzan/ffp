@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 use \Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Support\Str;
 
+use App\Models\Province;
+use App\Models\Regency;
+use App\Models\District;
+use App\Models\Village;
+
 class DashboardPostController extends Controller
 {
     /**
@@ -40,9 +45,13 @@ class DashboardPostController extends Controller
      */
     public function create()
     {
-        return view('dashboard.posts.create',[
-            'categories' => Category::all()
-        ]);
+        $provinces = Province::all();
+        $regencies = Regency::all();
+        $districts = District::all();
+        $villages = Village::all();
+        $categories = Category::all();
+
+        return view('dashboard.posts.create', compact('provinces','regencies','districts','villages','categories'));
     }
 
     /**
