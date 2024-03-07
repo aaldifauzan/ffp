@@ -30,7 +30,7 @@
                 <select class="form-control" id="provinsi">
                     <option>Pilih Provinsi..</option>
                     @foreach ($provinces as $provinsi)
-                        <option>{{ $provinsi->name }}</option>
+                        <option value="{{ $provinsi->id }}">{{ $provinsi->name }}</option>
                     @endforeach
                 </select>
             </div>
@@ -39,29 +39,23 @@
                 <label for="exampleFormControlSelect2">Kabupaten/Kota</label>
                 <select class="form-control" id="kabupaten">
                     <option>Pilih Kabupaten/Kota..</option>
-                    @foreach ($regencies as $kabupaten)
-                        <option>{{ $kabupaten->name }}</option>
-                    @endforeach
+
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="exampleFormControlSelect2">Kecamatan</label>
+                <label for="exampleFormControlSelect3">Kecamatan</label>
                 <select class="form-control" id="kecamatan">
                     <option>Pilih Kecamatan..</option>
-                    @foreach ($districts as $kecamatan)
-                        <option>{{ $kecamatan->name }}</option>
-                    @endforeach
+
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="exampleFormControlSelect2">Kelurahan</label>
+                <label for="exampleFormControlSelect4">Kelurahan</label>
                 <select class="form-control" id="kelurahan">
                     <option>Pilih Kelurahan..</option>
-                    @foreach ($villages as $kelurahan)
-                        <option>{{ $kelurahan->name }}</option>
-                    @endforeach
+
                 </select>
             </div>
             {{-- <div class="col-md-6">

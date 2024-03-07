@@ -46,12 +46,19 @@ class DashboardPostController extends Controller
     public function create()
     {
         $provinces = Province::all();
-        $regencies = Regency::all();
-        $districts = District::all();
-        $villages = Village::all();
-        $categories = Category::all();
 
-        return view('dashboard.posts.create', compact('provinces','regencies','districts','villages','categories'));
+        return view('dashboard.posts.create', compact('provinces'));
+    }
+
+    public function getkabupaten(request $request)
+    {
+        $id_provinsi = $request->id_provinsi;
+
+        $kabupatens = Regency::where('province_id', $id_provinsi)->get();
+
+        foreach($kabupatens as $kabupaten){
+            echo "<option value='$kabupaten->id'>$kabupaten->name</option>";
+        }
     }
 
     /**

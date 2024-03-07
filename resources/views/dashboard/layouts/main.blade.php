@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Hugo 0.84.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}"/>
     <title>Forest Fire Prediction | Dashboard</title>
 
     <!-- Bootstrap core CSS (v5.0.2) -->
@@ -54,6 +55,35 @@
 
 <!-- Dashboard JavaScript -->
 <script src="/js/dashboard.js"></script>
+
+<script>
+    $(function(){
+        $.ajaxSetup({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+        });
+
+        $('#provinsi').on('change', function(){
+            let id_provinsi = $('#provinsi').val();
+            // console.log(id_provinsi);
+
+            $.ajax({
+                type : 'POST',
+                url : "{{route('getkabupaten')}}",
+                data : {id_provinsi:id_provinsi},
+                cache : false,
+
+                success: function(msg){
+                    $('#kabupaten').html(msg)
+                    $('#kecamatan').html('')
+                    $('#kelurahan').html('')
+                },
+                error: function(data){
+                    console.log('error:',data)
+                }
+            })
+        });
+    });
+</script>
 
 </body>
 </html>
