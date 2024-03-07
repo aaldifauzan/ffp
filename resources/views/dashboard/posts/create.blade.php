@@ -24,7 +24,47 @@
                     </span>
                 </div>
             </div>
-            <div class="col-md-6">
+
+            <div class="form-group">
+                <label for="exampleFormControlSelect1">Provinsi</label>
+                <select class="form-control" id="provinsi">
+                    <option>Pilih Provinsi..</option>
+                    @foreach ($provinces as $provinsi)
+                        <option>{{ $provinsi->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="exampleFormControlSelect2">Kabupaten/Kota</label>
+                <select class="form-control" id="kabupaten">
+                    <option>Pilih Kabupaten/Kota..</option>
+                    @foreach ($regencies as $kabupaten)
+                        <option>{{ $kabupaten->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="exampleFormControlSelect2">Kecamatan</label>
+                <select class="form-control" id="kecamatan">
+                    <option>Pilih Kecamatan..</option>
+                    @foreach ($districts as $kecamatan)
+                        <option>{{ $kecamatan->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="exampleFormControlSelect2">Kelurahan</label>
+                <select class="form-control" id="kelurahan">
+                    <option>Pilih Kelurahan..</option>
+                    @foreach ($villages as $kelurahan)
+                        <option>{{ $kelurahan->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            {{-- <div class="col-md-6">
                 <label for="category" class="form-label">Province</label>
                 <select class="form-select" name="category_id">
                     @foreach ($categories as $category)
@@ -34,7 +74,7 @@
                             <option value="{{ $category->id }}">{{ $category->name }}</option>
                         @endif
                     @endforeach
-                </select>
+                </select> --}}
             </div>
         </div>
         <div class="mb-3">
