@@ -46,8 +46,9 @@ class DashboardPostController extends Controller
     public function create()
     {
         $provinces = Province::all();
+        $categories = Category::all();
 
-        return view('dashboard.posts.create', compact('provinces'));
+        return view('dashboard.posts.create', compact('provinces','categories'));
     }
 
     public function getkabupaten(request $request)

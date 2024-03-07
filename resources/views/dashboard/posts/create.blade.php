@@ -55,7 +55,7 @@
 
                 </select>
             </div>
-            {{-- <div class="col-md-6">
+            <div class="col-md-6">
                 <label for="category" class="form-label">Province</label>
                 <select class="form-select" name="category_id">
                     @foreach ($categories as $category)
@@ -65,7 +65,7 @@
                             <option value="{{ $category->id }}">{{ $category->name }}</option>
                         @endif
                     @endforeach
-                </select> --}}
+                </select>
             </div>
         </div>
         <div class="mb-3">
