@@ -15,7 +15,7 @@
   <a href="/dashboard/posts/create" class="btn btn-primary mb-3">Create new post</a>
 
   <form action="/dashboard/posts" method="GET" class="mb-3">
-    <div class="mb-3 row">
+    {{-- <div class="mb-3 row">
       <div class="col-md-6">
             <div class="form-group">
                 <label for="provinsi">Provinsi</label>
@@ -56,7 +56,7 @@
       <div class="col-md-6 d-flex justify-content-end">
           <button type="submit" class="btn btn-outline-secondary">Filter</button>
       </div>
-  </div>
+  </div> --}}
 </form>
 
 
@@ -68,34 +68,20 @@
       <thead>
         <tr>
           <th scope="col">#</th>
-          {{-- <th scope="col">Title</th> --}}
           <th scope="col">Provinsi</th>
-          <th scope="col">Kota</th>
-          <th scope="col">Date</th>
-          <th scope="col">Temperature</th>
-          <th scope="col">Humidity</th>
-          <th scope="col">Rainfall</th>
-          <th scope="col">Windspeed</th>
-          <th scope="col">Action</th>
         </tr>
       </thead>
       <tbody>
-        @foreach ($posts as $post)
+        @foreach ($provinces as $provinsi)
           <tr>
             <td>{{ $loop->iteration }}</td>
-            {{-- <td>{{ $post->title }}</td> --}}
-            {{-- <td>{{ $post->category->name }}</td> --}}
-            <td>{{ $post->province->name }}</td>
-            <td>{{ $post->regency->name }}</td>
-            <td>{{ $post->date }}</td>
-            <td>{{ $post->temperature }}</td>
-            <td>{{ $post->humidity }}</td>
-            <td>{{ $post->rainfall }}</td>
-            <td>{{ $post->windspeed }}</td>
+            <td>{{ $provinsi->name }}</td>
             <td>
-              <a href="/dashboard/posts/{{ $post->slug }}" class="badge bg-info"><span data-feather="eye"></span></a>
-              <a href="/dashboard/posts/{{ $post->slug }}/edit" class="badge bg-warning"><span data-feather="edit"></span></a>
-              <form action="/dashboard/posts/{{ $post->slug }}" method="POST" class="d-inline">
+              <a href="{{ route('dashboard.posts.showRegenciesByProvince', $provinsi->id) }}" class="badge bg-info">
+                <span data-feather="eye"></span>
+            </a>
+              <a href="/dashboard/posts/{{ $provinsi->id }}/edit" class="badge bg-warning"><span data-feather="edit"></span></a>
+              <form action="/dashboard/posts/{{ $provinsi->id }}" method="POST" class="d-inline">
                 @method('delete')
                 @csrf
                 <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')">

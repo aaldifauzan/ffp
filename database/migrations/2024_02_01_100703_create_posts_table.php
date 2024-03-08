@@ -16,15 +16,11 @@ return new class extends Migration
             $table->foreignId('user_id');
             $table->foreignId('provinsi');
             $table->foreignId('kabupaten');
-            $table->string('title');
             $table->float('temperature');
             $table->float('rainfall');
             $table->float('humidity');
             $table->float('windspeed');
-            $table->string('slug')->unique();
             $table->date('date');
-            // $table->text('excerpt');
-            // $table->text('body');
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
         });

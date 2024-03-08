@@ -49,7 +49,7 @@
                 </select>
             </div>
 
-            <div class="col-md-6">
+            {{-- <div class="col-md-6">
                 <label for="category" class="form-label">Province</label>
                 <select class="form-select" name="category_id">
                     @foreach ($categories as $category)
@@ -60,9 +60,9 @@
                         @endif
                     @endforeach
                 </select>
-            </div>
+            </div> --}}
         </div>
-        <div class="mb-3">
+        {{-- <div class="mb-3">
             <label for="title" class="form-label">Title</label>
             <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name='title' required autofocus value="{{ old('title') }}">
             @error('title')
@@ -70,7 +70,7 @@
                 {{ $message }}
             </div>
             @enderror
-        </div>
+        </div> --}}
 
         <div class="mb-3">
             <label for="temperature" class="form-label">Temperature</label>
@@ -110,7 +110,7 @@
         </div>
 
         
-        <div class="mb-3">
+        {{-- <div class="mb-3">
             <label for="slug" class="form-label">Slug</label>
             <input type="text" class="form-control @error('slug') is-invalid @enderror" id="slug" name='slug' required value="{{ old('slug') }}">
             @error('slug')
@@ -118,7 +118,7 @@
                 {{ $message }}
             </div>
             @enderror
-        </div>
+        </div> --}}
         {{-- <div class="mb-3">
             <label for="imagr" class="form-label">Post Image</label>
             <input class="form-control @error('image') is-invalid @enderror" type="file" id="image" name="image">
@@ -140,7 +140,7 @@
     </form>
 </div>
 
-<script>
+{{-- <script>
     const title = document.querySelector("#title");
     const slug = document.querySelector("#slug");
 
@@ -153,7 +153,7 @@
     document.addEventListener('trix-file-accept', function(e){
         e.preventDefault()
     })
-</script>
+</script> --}}
 
 <script type="text/javascript">
     $(function() {

@@ -82,23 +82,13 @@ public function index(Request $request)
             'date' => 'required|date_format:d-m-Y',
             'provinsi' => 'required',
             'kabupaten' => 'required',
-            'title' => 'required|max:255',
-            'slug' => 'required|unique:posts',
-            'category_id' => 'required',
             'temperature' => 'required',
             'humidity' => 'required',
             'rainfall' => 'required',
             'windspeed' => 'required',
-            'image' => 'image|file|max:4196',
-            // 'body' => 'required'
         ]);
 
-        if($request->file('image')){
-            $validatedData['image'] = $request->file('image')->store('post-images');
-        }
-
         $validatedData['user_id'] = auth()->user()->id;
-        // $validatedData['excerpt'] = Str::limit(strip_tags($request->body), 200);
 
         Post::create($validatedData);
 
@@ -134,7 +124,6 @@ public function index(Request $request)
         $rules = [
             'title' => 'required|max:255',
             'category_id' => 'required',
-            // 'body' => 'required',
             'temperature' => 'required',
             'humidity' => 'required',
             'rainfall' => 'required',
@@ -170,4 +159,22 @@ public function index(Request $request)
         $slug = SlugService::createSlug(Post::class, 'slug', $request->title);
         return response()->json(['slug' => $slug]);
     }
+
+    public function showRegenciesByProvince($provinceId)
+{
+    $province = Province::find($provinceId);
+
+    if (!$province) {
+        abort(404); // Handle the case when the province is not found
+    }
+
+    $regencies = Regency::where('province_id', $provinceId)->get();
+
+    return view('dashboard.posts.index_regency', [
+        'province' => $province,
+        'regencies' => $regencies,
+    ]);
 }
+}
+
+

@@ -77,3 +77,7 @@ Route::get('/dashboard/posts/checkSlug', [DashboardPostController::class], 'chec
 Route::resource('/dashboard/posts', DashboardPostController::class)->middleware('auth');
 
 Route::post('/getkabupaten', [DashboardPostController::class, 'getkabupaten'])->name('getkabupaten')->middleware('auth');
+
+Route::get('/dashboard/posts/province/{provinceId}', [DashboardPostController::class, 'showRegenciesByProvince'])
+    ->name('dashboard.posts.showRegenciesByProvince')
+    ->middleware('auth');
