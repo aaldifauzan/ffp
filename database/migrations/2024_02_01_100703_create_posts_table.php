@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id');
             $table->foreignId('user_id');
+            $table->foreignId('provinsi');
+            $table->foreignId('kabupaten');
             $table->string('title');
             $table->float('temperature');
             $table->float('rainfall');
             $table->float('humidity');
             $table->float('windspeed');
             $table->string('slug')->unique();
-            $table->string('image')->nullable();
             $table->date('date');
             // $table->text('excerpt');
             // $table->text('body');

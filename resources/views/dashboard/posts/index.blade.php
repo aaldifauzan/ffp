@@ -44,7 +44,8 @@
         <tr>
           <th scope="col">#</th>
           {{-- <th scope="col">Title</th> --}}
-          <th scope="col">Province</th>
+          <th scope="col">Provinsi</th>
+          <th scope="col">Kota</th>
           <th scope="col">Date</th>
           <th scope="col">Temperature</th>
           <th scope="col">Humidity</th>
@@ -58,7 +59,9 @@
           <tr>
             <td>{{ $loop->iteration }}</td>
             {{-- <td>{{ $post->title }}</td> --}}
-            <td>{{ $post->category->name }}</td>
+            {{-- <td>{{ $post->category->name }}</td> --}}
+            <td>{{ $post->provinsi }}</td>
+            <td>{{ $post->kabupaten }}</td>
             <td>{{ $post->date }}</td>
             <td>{{ $post->temperature }}</td>
             <td>{{ $post->humidity }}</td>

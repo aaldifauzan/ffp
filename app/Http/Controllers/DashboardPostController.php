@@ -73,6 +73,8 @@ class DashboardPostController extends Controller
     {
         $validatedData = $request-> validate([
             'date' => 'required|date_format:d-m-Y',
+            'provinsi' => 'required',
+            'kabupaten' => 'required',
             'title' => 'required|max:255',
             'slug' => 'required|unique:posts',
             'category_id' => 'required',
