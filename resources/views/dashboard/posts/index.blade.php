@@ -18,15 +18,14 @@
     <div class="mb-3 row">
       <label for="category" class="form-label">Province</label>
       <div class="col-md-6">
-            
-            <select class="form-select" name="category_id">
-                <option value="" {{ !$selectedCategory ? 'selected' : '' }}>All Provinces</option>
-                @foreach ($categories as $category)
-                <option value="{{ $category->id }}" {{ $selectedCategory == $category->id ? 'selected' : '' }}>
-                    {{ $category->name }}
-                </option>
-                @endforeach
-            </select>
+        <select class="form-select" name="provinsi">
+          <option value="" {{ !$selectedProvince ? 'selected' : '' }}>All Provinces</option>
+          @foreach ($provinces as $province)
+              <option value="{{ $province->id }}" {{ $selectedProvince == $province->id ? 'selected' : '' }}>
+                  {{ $province->name }}
+              </option>
+          @endforeach
+        </select>
         </div>
         <div class="col-md-6 d-flex justify-content-end">
             <button type="submit" class="btn btn-outline-secondary">Filter</button>
@@ -60,8 +59,8 @@
             <td>{{ $loop->iteration }}</td>
             {{-- <td>{{ $post->title }}</td> --}}
             {{-- <td>{{ $post->category->name }}</td> --}}
-            <td>{{ $post->provinsi }}</td>
-            <td>{{ $post->kabupaten }}</td>
+            <td>{{ $post->province->name }}</td>
+            <td>{{ $post->regency->name }}</td>
             <td>{{ $post->date }}</td>
             <td>{{ $post->temperature }}</td>
             <td>{{ $post->humidity }}</td>

@@ -44,6 +44,16 @@ class Post extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function province()
+    {
+        return $this->belongsTo(Province::class, 'provinsi');
+    }
+    
+    public function regency()
+    {
+        return $this->belongsTo(Regency::class, 'kabupaten');
+    }
+
     public function getRouteKeyName()
     {
         return 'slug';

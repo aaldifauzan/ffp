@@ -45,6 +45,10 @@ class Regency extends Model
         return $this->belongsTo(Province::class);
     }
 
+    public function posts()
+{
+    return $this->hasMany(Post::class, 'kabupaten');
+}
     /**
      * Regency has many districts.
      *

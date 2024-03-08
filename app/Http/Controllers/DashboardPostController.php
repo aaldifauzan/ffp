@@ -20,22 +20,20 @@ class DashboardPostController extends Controller
      */
     public function index(Request $request)
     {
-        $categoryId = $request->input('category_id');
+        $provinceId = $request->input('provinsi');
         
         $postsQuery = Post::where('user_id', auth()->user()->id);
     
-        if ($categoryId) {
-            $postsQuery->whereHas('category', function ($query) use ($categoryId) {
-                $query->where('id', $categoryId);
-            });
+        if ($provinceId) {
+            $postsQuery->where('provinsi', $provinceId);
         }
     
         $posts = $postsQuery->get();
         
         return view('dashboard.posts.index', [
             'posts' => $posts,
-            'categories' => Category::all(),
-            'selectedCategory' => $categoryId,
+            'provinces' => Province::all(),
+            'selectedProvince' => $provinceId,
         ]);
     }
     
