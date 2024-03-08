@@ -16,21 +16,47 @@
 
   <form action="/dashboard/posts" method="GET" class="mb-3">
     <div class="mb-3 row">
-      <label for="category" class="form-label">Province</label>
       <div class="col-md-6">
-        <select class="form-select" name="provinsi">
-          <option value="" {{ !$selectedProvince ? 'selected' : '' }}>All Provinces</option>
-          @foreach ($provinces as $province)
-              <option value="{{ $province->id }}" {{ $selectedProvince == $province->id ? 'selected' : '' }}>
-                  {{ $province->name }}
-              </option>
-          @endforeach
-        </select>
-        </div>
-        <div class="col-md-6 d-flex justify-content-end">
-            <button type="submit" class="btn btn-outline-secondary">Filter</button>
-        </div>
-    </div>
+            <div class="form-group">
+                <label for="provinsi">Provinsi</label>
+                <select class="form-control @error('provinsi') is-invalid @enderror" id="provinsi" name="provinsi">
+                  <option value="" {{ empty($selectedProvince) ? 'selected' : '' }}>-- All Provinsi --</option>
+                  @foreach ($provinces as $provinsi)
+                      <option value="{{ $provinsi->id }}" {{ $selectedProvince == $provinsi->id ? 'selected' : '' }}>
+                          {{ $provinsi->name }}
+                      </option>
+                  @endforeach
+                  
+                </select>
+                @error('provinsi')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
+            </div>
+
+            <div class="form-group">
+              <label for="kabupaten">Kabupaten/Kota</label>
+              <select class="form-control @error('kabupaten') is-invalid @enderror" id="kabupaten" name="kabupaten">
+                <option value="" {{ empty($selectedRegency) ? 'selected' : '' }}>-- Kabupaten/Kota --</option>
+                @foreach ($regencies as $kabupaten)
+                    <option value="{{ $kabupaten->id }}" {{ $selectedRegency == $kabupaten->id ? 'selected' : '' }}>
+                        {{ $kabupaten->name }}
+                    </option>
+                @endforeach
+                
+              </select>
+              @error('kabupaten')
+                  <div class="invalid-feedback">
+                      {{ $message }}
+                  </div>
+              @enderror
+          </div>
+      </div>
+      <div class="col-md-6 d-flex justify-content-end">
+          <button type="submit" class="btn btn-outline-secondary">Filter</button>
+      </div>
+  </div>
 </form>
 
 

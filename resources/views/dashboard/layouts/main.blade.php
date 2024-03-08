@@ -83,6 +83,5 @@
         $('#provinsi').trigger('change');
     });
 </script>
-
 </body>
 </html>

@@ -18,24 +18,33 @@ class DashboardPostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
-    {
-        $provinceId = $request->input('provinsi');
-        
-        $postsQuery = Post::where('user_id', auth()->user()->id);
+public function index(Request $request)
+{
+    $provinceId = $request->input('provinsi');
+    $regencyId = $request->input('kabupaten');
     
-        if ($provinceId) {
-            $postsQuery->where('provinsi', $provinceId);
-        }
-    
-        $posts = $postsQuery->get();
-        
-        return view('dashboard.posts.index', [
-            'posts' => $posts,
-            'provinces' => Province::all(),
-            'selectedProvince' => $provinceId,
-        ]);
+    $postsQuery = Post::where('user_id', auth()->user()->id);
+
+    if ($provinceId) {
+        $postsQuery->where('provinsi', $provinceId);
     }
+
+    if ($regencyId && $regencyId != "-- Kabupaten/Kota --") {
+        $postsQuery->where('kabupaten', $regencyId);
+    }
+
+
+    $posts = $postsQuery->get();
+    
+    return view('dashboard.posts.index', [
+        'posts' => $posts,
+        'provinces' => Province::all(),
+        'regencies' => Regency::all(),
+        'selectedProvince' => $provinceId,
+        'selectedRegency' => $regencyId,
+    ]);
+}
+
     
 
     /**
