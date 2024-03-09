@@ -73,11 +73,14 @@ Route::get('/dashboard', function()
 
 
 
-Route::get('/dashboard/posts/checkSlug', [DashboardPostController::class], 'checkSlug')->middleware('auth');
 Route::resource('/dashboard/posts', DashboardPostController::class)->middleware('auth');
 
 Route::post('/getkabupaten', [DashboardPostController::class, 'getkabupaten'])->name('getkabupaten')->middleware('auth');
 
 Route::get('/dashboard/posts/province/{provinceId}', [DashboardPostController::class, 'showRegenciesByProvince'])
     ->name('dashboard.posts.showRegenciesByProvince')
+    ->middleware('auth');
+
+Route::get('/dashboard/posts/edit/{province_id}/{regency_id}', [DashboardPostController::class, 'edit'])
+    ->name('dashboard.posts.edit')
     ->middleware('auth');

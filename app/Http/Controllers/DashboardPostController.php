@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use \Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Support\Str;
 
 use App\Models\Province;
@@ -108,13 +107,36 @@ public function index(Request $request)
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Post $post)
+    public function edit($provinceId, $regencyId)
     {
-        return view('dashboard.posts.edit',[
-            'post' => $post,
+        // Retrieve the province and regency based on IDs
+        $province = Province::find($provinceId);
+        $regency = Regency::find($regencyId);
+    
+        // Check if both province and regency exist
+        if (!$province || !$regency) {
+            abort(404); // Handle the case when either the province or regency is not found
+        }
+    
+        // Fetch the post based on the province and regency
+        $post = Post::where('provinsi', $provinceId)->where('kabupaten', $regencyId)->first();
+    
+        // Check if the post exists
+        if (!$post) {
+            return redirect()->back()->with('error', 'No data found for the specified province and regency.');
+            // You can customize this error message as needed
+        }
+    
+        return view('dashboard.posts.edit', [
+            'province' => $province,
+            'regency' => $regency,
+            'post' => $post, // Pass the post data to the view
             'categories' => Category::all()
+            // Add other data you may need for the edit view
         ]);
     }
+    
+    
 
     /**
      * Update the specified resource in storage.
@@ -130,14 +152,9 @@ public function index(Request $request)
             'windspeed' => 'required',
         ];
 
-        if($request->slug != $post->slug){
-            $rules['slug'] = 'required|unique:posts';
-        }
-
-        $validatedData = $request-> validate($rules);
+        $validatedData = $request->validate($rules);
 
         $validatedData['user_id'] = auth()->user()->id;
-        // $validatedData['excerpt'] = Str::limit(strip_tags($request->body), 200);
 
         Post::where('id', $post->id)
             ->update($validatedData);
@@ -154,27 +171,22 @@ public function index(Request $request)
         return redirect('/dashboard/posts')->with('success', 'Post has been deleted!');
     }
 
-    public function checkSlug(Request $request)
-    {
-        $slug = SlugService::createSlug(Post::class, 'slug', $request->title);
-        return response()->json(['slug' => $slug]);
-    }
 
     public function showRegenciesByProvince($provinceId)
-{
-    $province = Province::find($provinceId);
-
-    if (!$province) {
-        abort(404); // Handle the case when the province is not found
+    {
+        $province = Province::find($provinceId);
+    
+        if (!$province) {
+            abort(404); // Handle the case when the province is not found
+        }
+    
+        $regencies = Regency::where('province_id', $provinceId)->get();
+    
+        return view('dashboard.posts.index_regency', [
+            'province' => $province,
+            'regencies' => $regencies,
+        ]);
     }
-
-    $regencies = Regency::where('province_id', $provinceId)->get();
-
-    return view('dashboard.posts.index_regency', [
-        'province' => $province,
-        'regencies' => $regencies,
-    ]);
-}
 }
 
 

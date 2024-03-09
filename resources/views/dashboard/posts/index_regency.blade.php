@@ -5,6 +5,12 @@
         <h1 class="h2">Regencies in {{ $province->name }}</h1>
     </div>
 
+    @if(session('error'))
+    <div class="alert alert-danger col-lg-8" role="alert">
+        {{ session('error') }}
+    </div>
+@endif
+
     <div class="col-lg-8">
         <div class="table-responsive">
             <table class="table table-striped table-sm">
@@ -24,7 +30,8 @@
                             <a href="" class="badge bg-info">
                               <span data-feather="eye"></span>
                           </a>
-                            <a href="/dashboard/posts/edit" class="badge bg-warning"><span data-feather="edit"></span></a>
+                          <a href="{{ route('dashboard.posts.edit', ['province_id' => $province->id, 'regency_id' => $regency->id]) }}" class="badge bg-warning"><span data-feather="edit"></span></a>
+
                             <form action="/dashboard/posts/" method="POST" class="d-inline">
                               @method('delete')
                               @csrf

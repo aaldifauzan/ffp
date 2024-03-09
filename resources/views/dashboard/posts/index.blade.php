@@ -80,7 +80,7 @@
               <a href="{{ route('dashboard.posts.showRegenciesByProvince', $provinsi->id) }}" class="badge bg-info">
                 <span data-feather="eye"></span>
             </a>
-              <a href="/dashboard/posts/{{ $provinsi->id }}/edit" class="badge bg-warning"><span data-feather="edit"></span></a>
+            {{-- <a href="/dashboard/posts/province/{{ $provinsi->id }}/edit" class="badge bg-warning"><span data-feather="edit"></span></a> --}}
               <form action="/dashboard/posts/{{ $provinsi->id }}" method="POST" class="d-inline">
                 @method('delete')
                 @csrf
