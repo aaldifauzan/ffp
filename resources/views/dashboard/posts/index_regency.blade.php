@@ -27,10 +27,9 @@
                         <td>{{ $regency->name }}</td>
                         <!-- Add other columns as needed -->
                         <td>
-                            <a href="" class="badge bg-info">
-                              <span data-feather="eye"></span>
-                          </a>
-                          <a href="{{ route('dashboard.posts.edit', ['province_id' => $province->id, 'regency_id' => $regency->id]) }}" class="badge bg-warning"><span data-feather="edit"></span></a>
+                            <a href="{{ route('dashboard.posts.show', ['province_id' => $province->id, 'regency_id' => $regency->id]) }}" class="badge bg-info">
+                                <span data-feather="eye"></span>
+                            </a>
 
                             <form action="/dashboard/posts/" method="POST" class="d-inline">
                               @method('delete')

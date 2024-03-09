@@ -97,10 +97,28 @@ public function index(Request $request)
     /**
      * Display the specified resource.
      */
-    public function show(Post $post)
+    public function show($provinceId, $regencyId)
     {
-        return view('dashboard.posts.show',[
-            'post' => $post
+        $province = Province::find($provinceId);
+        $regency = Regency::find($regencyId);
+    
+        if (!$province || !$regency) {
+            abort(404); // Handle the case when either the province or regency is not found
+        }
+    
+        // Fetch all posts based on the province and regency
+        $posts = Post::where('provinsi', $provinceId)->where('kabupaten', $regencyId)->get();
+    
+        // Check if there are any posts
+        if ($posts->isEmpty()) {
+            return redirect()->back()->with('error', 'No data found for the specified province and regency.');
+            // You can customize this error message as needed
+        }
+    
+        return view('dashboard.posts.show', [
+            'province' => $province,
+            'regency' => $regency,
+            'posts' => $posts,
         ]);
     }
 
