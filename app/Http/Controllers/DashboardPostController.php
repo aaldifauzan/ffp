@@ -139,6 +139,10 @@ public function index(Request $request)
         // Fetch the post based on the province and regency
         $post = Post::where('provinsi', $provinceId)->where('kabupaten', $regencyId)->first();
     
+        // Fetch all provinces and regencies
+        $provinces = Province::all();
+        $regencies = Regency::all();
+    
         // Check if the post exists
         if (!$post) {
             return redirect()->back()->with('error', 'No data found for the specified province and regency.');
@@ -148,8 +152,10 @@ public function index(Request $request)
         return view('dashboard.posts.edit', [
             'province' => $province,
             'regency' => $regency,
-            'post' => $post, // Pass the post data to the view
-            'categories' => Category::all()
+            'post' => $post,
+            'provinces' => $provinces,
+            'regencies' => $regencies, // Ensure that the variable is passed correctly
+            'categories' => Category::all(),
             // Add other data you may need for the edit view
         ]);
     }
@@ -162,21 +168,21 @@ public function index(Request $request)
     public function update(Request $request, Post $post)
     {
         $rules = [
-            'title' => 'required|max:255',
-            'category_id' => 'required',
+            'provinsi' => 'required',
+            'kabupaten' => 'required',
             'temperature' => 'required',
             'humidity' => 'required',
             'rainfall' => 'required',
             'windspeed' => 'required',
         ];
-
+    
         $validatedData = $request->validate($rules);
-
+    
         $validatedData['user_id'] = auth()->user()->id;
-
-        Post::where('id', $post->id)
-            ->update($validatedData);
-
+    
+        // Update the post based on the model
+        $post->update($validatedData);
+    
         return redirect('/dashboard/posts')->with('success', 'Post has been updated!');
     }
 

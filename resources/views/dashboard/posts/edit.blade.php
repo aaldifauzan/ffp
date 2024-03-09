@@ -5,9 +5,8 @@
     <h1 class="h2">Edit Posts</h1>
 </div>
 
-
 <div class="col-lg-8">
-    <form method="post" action="/dashboard/posts/{{ $province->name }}/{{ $regency->name }}" class="mb-5">
+    <form method="post" action="{{ route('posts.update', ['post' => $post->id]) }}" class="mb-5">
         @method('put')
         @csrf
         <div class="mb-3 row">
@@ -27,27 +26,29 @@
             </div>
             <div class="col-md-6">
                 <label for="category" class="form-label">Province</label>
-                <select class="form-select" name="category_id">
-                    @foreach ( $categories as $category )
-                        @if(old('category_id', $post->category_id) == $category->id)
-                            <option value="{{ $category->id }}" selected>{{ $category->name }}</option>
+                <select class="form-select" name="provinsi">
+                    @foreach ( $provinces as $provinsi )
+                        @if(old('provinsi', $post->provinsi) == $provinsi->id)
+                            <option value="{{ $provinsi->id }}" selected>{{ $provinsi->name }}</option>
                         @else
-                            <option value="{{ $category->id }}" {{ $post ? 'disabled' : '' }}>{{ $category->name }}</option>
+                            <option value="{{ $provinsi->id }}" {{ $post ? 'disabled' : '' }}>{{ $provinsi->name }}</option>
+                        @endif
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="category" class="form-label">Kabupaten/Kota</label>
+                <select class="form-select" name="kabupaten">
+                    @foreach ($regencies as $kabupaten)
+                        @if(old('kabupaten', $post->kabupaten) == $kabupaten->id)
+                            <option value="{{ $kabupaten->id }}" selected>{{ $kabupaten->name }}</option>
+                        @else
+                            <option value="{{ $kabupaten->id }}" {{ $post ? 'disabled' : '' }}>{{ $kabupaten->name }}</option>
                         @endif
                     @endforeach
                 </select>
             </div>
         </div>
-        <div class="mb-3">
-            <label for="title" class="form-label">Title</label>
-            <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name='title' required autofocus value="{{ old('title', $post->title) }}">
-            @error('title')
-            <div class="invalid-feedback">
-                {{ $message }}
-            </div>
-            @enderror
-        </div>
-
         <div class="mb-3">
             <label for="temperature" class="form-label">Temperature</label>
             <input type="text" class="form-control @error('temperature') is-invalid @enderror" id="temperature" name='temperature' required autofocus value="{{ old('temperature', $post->temperature) }}">
@@ -84,41 +85,14 @@
             </div>
             @enderror
         </div>
-        <div class="mb-3">
-            <label for="slug" class="form-label">Slug</label>
-            <input type="text" class="form-control @error('slug') is-invalid @enderror" id="slug" name='slug' required value="{{ old('slug', $post->slug) }}">
-            @error('slug')
-            <div class="invalid-feedback">
-                {{ $message }}
-            </div>
-            @enderror
-        </div>
-        {{-- <div class="mb-3">
-            <label for="body" class="form-label">Body</label>
-                @error('body')
-                    <p class="text-danger">{{ $message }}</p>
-                @enderror
-                <input id="body" type="hidden" name="body" value="{{ old('body', $post->body) }}">
-                <trix-editor input="body"></trix-editor>
-        </div> --}}
         <button type="submit" class="btn btn-primary">Update Post</button>
     </form>
 </div>
 
 <script>
-    const title = document.querySelector("#title");
-    const slug = document.querySelector("#slug");
-
-    title.addEventListener("keyup", function() {
-        let preslug = title.value;
-        preslug = preslug.replace(/ /g,"-");
-        slug.value = preslug.toLowerCase();
-    });
-
     document.addEventListener('trix-file-accept', function(e){
         e.preventDefault()
     })
 </script>
-
 
 @endsection
