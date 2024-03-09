@@ -9,8 +9,7 @@
     <div class="alert alert-danger col-lg-8" role="alert">
         {{ session('error') }}
     </div>
-@endif
-
+    @endif
     <div class="col-lg-8">
         <div class="table-responsive">
             <table class="table table-striped table-sm">
@@ -26,7 +25,6 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $regency->name }}</td>
-                        <!-- Add other columns as needed -->
                         <td>
                             <a href="{{ route('dashboard.posts.show', ['province_id' => $province->id, 'regency_id' => $regency->id]) }}" class="badge bg-info">
                                 <span data-feather="eye"></span>
@@ -35,9 +33,6 @@
                             <form action="/dashboard/posts/" method="POST" class="d-inline">
                               @method('delete')
                               @csrf
-                              <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')">
-                                <span data-feather="x-circle"></span>
-                              </button>
                             </form>
                           </td>
                     </tr>

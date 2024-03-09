@@ -45,13 +45,13 @@
                                     <span data-feather="edit"></span>
                                 </a>
                                 
-                                <form action="/dashboard/posts/{{ $province->id }}/{{ $regency->id }}" method="POST" class="d-inline">
+                                <form action="{{ route('dashboard.posts.destroy', ['post' => $post->id]) }}" method="POST" class="d-inline">
                                     @method('delete')
                                     @csrf
                                     <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')">
-                                      <span data-feather="x-circle"></span>
+                                        <span data-feather="x-circle"></span>
                                     </button>
-                                  </form>
+                                </form>
                             </td>
                         </tr>
                         

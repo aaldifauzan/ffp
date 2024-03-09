@@ -193,8 +193,9 @@ public function index(Request $request)
      */
     public function destroy(Post $post)
     {
-        Post::destroy($post->id);
-        return redirect('/dashboard/posts')->with('success', 'Post has been deleted!');
+        $post->delete();
+    
+        return redirect()->back()->with('success', 'Post has been deleted!');
     }
 
 
