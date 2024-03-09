@@ -81,7 +81,7 @@ Route::get('/dashboard/posts/province/{provinceId}', [DashboardPostController::c
     ->name('dashboard.posts.showRegenciesByProvince')
     ->middleware('auth');
 
-Route::get('/dashboard/posts/edit/{province_id}/{regency_id}', [DashboardPostController::class, 'edit'])
+Route::get('/dashboard/posts/edit/{province_id}/{regency_id}/{post_id}', [DashboardPostController::class, 'edit'])
     ->name('dashboard.posts.edit')
     ->middleware('auth');
 

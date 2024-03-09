@@ -125,30 +125,30 @@ public function index(Request $request)
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($provinceId, $regencyId)
+    public function edit($provinceId, $regencyId, $postId)
     {
         // Retrieve the province and regency based on IDs
         $province = Province::find($provinceId);
         $regency = Regency::find($regencyId);
-    
+        
         // Check if both province and regency exist
         if (!$province || !$regency) {
             abort(404); // Handle the case when either the province or regency is not found
         }
-    
-        // Fetch the post based on the province and regency
-        $post = Post::where('provinsi', $provinceId)->where('kabupaten', $regencyId)->first();
-    
+        
+        // Fetch the post based on the post ID
+        $post = Post::find($postId);
+        
         // Fetch all provinces and regencies
         $provinces = Province::all();
         $regencies = Regency::all();
-    
+        
         // Check if the post exists
         if (!$post) {
-            return redirect()->back()->with('error', 'No data found for the specified province and regency.');
+            return redirect()->back()->with('error', 'No data found for the specified post.');
             // You can customize this error message as needed
         }
-    
+        
         return view('dashboard.posts.edit', [
             'province' => $province,
             'regency' => $regency,
@@ -159,6 +159,7 @@ public function index(Request $request)
             // Add other data you may need for the edit view
         ]);
     }
+    
     
     
 
@@ -183,7 +184,8 @@ public function index(Request $request)
         // Update the post based on the model
         $post->update($validatedData);
     
-        return redirect('/dashboard/posts')->with('success', 'Post has been updated!');
+        return redirect()->route('dashboard.posts.show', ['province_id' => $post->provinsi, 'regency_id' => $post->kabupaten])
+        ->with('success', 'Post has been updated!');
     }
 
     /**
