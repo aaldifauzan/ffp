@@ -44,6 +44,12 @@ public function index(Request $request)
     ]);
 }
 
+public function importCSV()
+{
+    // Add logic for CSV import page
+    return view('dashboard.posts.importcsv');
+}
+
     
 
     /**

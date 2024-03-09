@@ -72,6 +72,10 @@ Route::get('/dashboard', function()
 })->middleware('auth');
 
 
+// Import CSV Page
+Route::get('/dashboard/posts/importcsv', [DashboardPostController::class, 'importCSV'])->name('dashboard.posts.importcsv');
+
+
 
 Route::resource('/dashboard/posts', DashboardPostController::class)->middleware('auth');
 
