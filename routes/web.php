@@ -96,3 +96,10 @@ Route::get('/dashboard/posts/show/{province_id}/{regency_id}', [DashboardPostCon
 
 Route::delete('/dashboard/posts/{post}', [DashboardPostController::class, 'destroy'])
     ->name('dashboard.posts.destroy');
+
+
+    Route::get('/dashboard/posts/importcsv', [DashboardPostController::class, 'importCSV'])->name('dashboard.posts.importcsv');
+    Route::post('/dashboard/posts/handle-csv-import', [DashboardPostController::class, 'handleCSVImport'])->name('dashboard.posts.handleCSVImport');
+
+
+    Route::get('/dashboard/posts', [DashboardPostController::class, 'index'])->name('dashboard.posts.index');

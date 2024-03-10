@@ -6,6 +6,8 @@ use App\Models\Post;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Imports\ProvinceImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 use App\Models\Province;
 use App\Models\Regency;
@@ -46,8 +48,31 @@ public function index(Request $request)
 
 public function importCSV()
 {
-    // Add logic for CSV import page
-    return view('dashboard.posts.importcsv');
+    $provinces = Province::all();
+
+    // Pass the $provinces variable to the view
+    return view('dashboard.posts.importcsv', compact('provinces'));
+}
+public function handleCSVImport(Request $request)
+{
+    $validatedData = $request->validate([
+        'provinsi' => 'required',
+        'kabupaten' => 'required',
+        'csv_file' => 'required|file|mimes:csv,txt',
+    ]);
+
+    // Get the uploaded file
+    $file = $request->file('csv_file');
+
+    // Provide an explicit type for the Excel import
+    $type = 'csv';
+
+    // Use the import method with the provided type
+    Excel::import(new ProvinceImport(), $file, $type);
+
+    // You can add your CSV processing logic here based on the uploaded file
+    // For demonstration purposes, I'm just returning a success message
+    return redirect()->route('dashboard.posts.index')->with('success', 'CSV file has been imported successfully.');
 }
 
     
