@@ -2,7 +2,7 @@
 
 @section('container')
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">My Posts</h1>
+    <h1 class="h2">Daftar Provinsi</h1>
 </div>
 
 @if(session()->has('success'))
@@ -12,7 +12,7 @@
 @endif
 
 <div class="col-lg-8">
-  <a href="/dashboard/posts/create" class="btn btn-primary mb-3">Create new post</a>
+  <a href="/dashboard/posts/create" class="btn btn-primary mb-3">Input Data Harian</a>
   <a href="{{ route('dashboard.posts.importcsv') }}" class="btn btn-success mb-3">Import CSV</a> <!-- Add this line for CSV import -->
   <form action="/dashboard/posts" method="GET" class="mb-3">
   </form>
@@ -35,11 +35,7 @@
                 <span data-feather="eye"></span>
               </a>
               <form action="/dashboard/posts/{{ $provinsi->id }}" method="POST" class="d-inline">
-                @method('delete')
-                @csrf
-                <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')">
-                  <span data-feather="x-circle"></span>
-                </button>
+
               </form>
             </td>
           </tr>

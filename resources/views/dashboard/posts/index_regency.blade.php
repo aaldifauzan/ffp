@@ -2,7 +2,7 @@
 
 @section('container')
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Regencies in {{ $province->name }}</h1>
+        <h1 class="h2">Daftar Provinsi di {{ $province->name }}</h1>
     </div>
 
     @if(session('error'))
@@ -15,7 +15,7 @@
             <table class="table table-striped table-sm">
                 <thead>
                 <tr>
-                    <th scope="col">No/</th>
+                    <th scope="col">No.</th>
                     <th scope="col">Kabupaten/Kota</th>
                     <th scope="col">Action</th>
                 </tr>
