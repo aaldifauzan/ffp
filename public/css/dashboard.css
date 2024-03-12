@@ -1,5 +1,7 @@
 body {
   font-size: .875rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: #f8f9fa;
 }
 
 .feather {
@@ -108,10 +110,77 @@ body {
   box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
 }
 
-body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  background-color: #f8f9fa;
+
+
+
+.table {
+  width: 100%;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  color: #212529;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add box-shadow for a subtle shadow effect */
+  overflow: hidden; /* Ensure the shadow is applied to the rounded corners */
 }
 
+.table th,
+.table td {
+  padding: 1.2rem;
+  vertical-align: top;
+  border-top: 1px solid #dee2e6;
+}
 
+.table thead th {
+  vertical-align: bottom;
+  border-bottom: 2px solid #dee2e6;
+  background-color: rgba(15, 157, 88);
+  color: #ffffff;
+  font-weight: bold;
+}
 
+.table tbody + tbody {
+  border-top: 2px solid #dee2e6;
+}
+
+.table .table {
+  background-color: #fff;
+}
+
+.table-sm th,
+.table-sm td {
+  padding: 0.8rem;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 123, 255, 0.05);
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+.alert {
+  margin-bottom: 20px;
+}
+
+.feather {
+  width: 16px;
+  height: 16px;
+  vertical-align: text-bottom;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.4em 0.6em;
+  font-size: 85%;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+}
+
+.badge-info {
+  color: #fff;
+  background-color: #17a2b8;
+}

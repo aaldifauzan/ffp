@@ -17,12 +17,14 @@
     </div>
 @endif
 
-    <div class="col-lg-8">
+    <div class="">
+        <a href="/dashboard/posts/create" class="btn btn-primary mb-3">Input Data Harian</a>
+        <a href="{{ route('dashboard.posts.importcsv') }}" class="btn btn-success mb-3">Import CSV</a>
         <div class="table-responsive">
             <table class="table table-striped table-sm">
                 <thead>
                     <tr>
-                        <th scope="col">#</th>
+                        <th scope="col">No.</th>
                         <th scope="col">Date</th>
                         <th scope="col">Temperature</th>
                         <th scope="col">Humidity</th>

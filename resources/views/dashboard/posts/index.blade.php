@@ -6,14 +6,14 @@
 </div>
 
 @if(session()->has('success'))
-<div class="alert alert-success col-lg-8" role="alert">
+<div class="alert alert-success" role="alert">
   {{ session('success') }}
 </div>
 @endif
 
 <div class="">
   <a href="/dashboard/posts/create" class="btn btn-primary mb-3">Input Data Harian</a>
-  <a href="{{ route('dashboard.posts.importcsv') }}" class="btn btn-success mb-3">Import CSV</a> <!-- Add this line for CSV import -->
+  <a href="{{ route('dashboard.posts.importcsv') }}" class="btn btn-success mb-3">Import CSV</a>
   <form action="/dashboard/posts" method="GET" class="mb-3">
   </form>
   <div class="table-responsive">

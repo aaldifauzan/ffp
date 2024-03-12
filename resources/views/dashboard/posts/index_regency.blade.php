@@ -6,11 +6,13 @@
     </div>
 
     @if(session('error'))
-    <div class="alert alert-danger col-lg-8" role="alert">
+    <div class="alert alert-danger" role="alert">
         {{ session('error') }}
     </div>
     @endif
-    <div class="col-lg-8">
+    <div class="">
+        <a href="/dashboard/posts/create" class="btn btn-primary mb-3">Input Data Harian</a>
+        <a href="{{ route('dashboard.posts.importcsv') }}" class="btn btn-success mb-3">Import CSV</a>
         <div class="table-responsive">
             <table class="table table-striped table-sm">
                 <thead>
