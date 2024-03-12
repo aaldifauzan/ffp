@@ -13,7 +13,7 @@
             <div class="">
                 <label for="date" class="form-label">Date</label>
                 <div class="input-group date" id="datepicker">
-                    <input type="text" class="form-control @error('date') is-invalid @enderror" placeholder="dd-mm-yyyy" id="date" name='date' required autofocus value="{{ old('date') }}">
+                    <input type="text" class="form-control @error('date') is-invalid @enderror" placeholder="dd-mm-yyyy" id="date" name='date' required autofocus value="{{ old('date') }}" readonly>
                     @error('date')
                     <div class="invalid-feedback">
                         {{ $message }}

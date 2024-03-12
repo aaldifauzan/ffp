@@ -114,7 +114,9 @@ public function handleCSVImport(Request $request)
                 'required',
                 'date_format:d-m-Y',
                 Rule::unique('posts')->where(function ($query) use ($request) {
-                    return $query->where('date', date('Y-m-d', strtotime($request->date)));
+                    return $query->where('date', date('Y-m-d', strtotime($request->date)))
+                                 ->where('provinsi', $request->provinsi)
+                                 ->where('kabupaten', $request->kabupaten);
                 }),
             ],
             'provinsi' => 'required',
