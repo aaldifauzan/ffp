@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Imports\ProvinceImport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Validation\Rule;
 
 use App\Models\Province;
 use App\Models\Regency;
@@ -108,8 +109,14 @@ public function handleCSVImport(Request $request)
      */
     public function store(Request $request)
     {
-        $validatedData = $request-> validate([
-            'date' => 'required|date_format:d-m-Y',
+        $validatedData = $request->validate([
+            'date' => [
+                'required',
+                'date_format:d-m-Y',
+                Rule::unique('posts')->where(function ($query) use ($request) {
+                    return $query->where('date', date('Y-m-d', strtotime($request->date)));
+                }),
+            ],
             'provinsi' => 'required',
             'kabupaten' => 'required',
             'temperature' => 'required',
@@ -117,11 +124,11 @@ public function handleCSVImport(Request $request)
             'rainfall' => 'required',
             'windspeed' => 'required',
         ]);
-
+    
         $validatedData['user_id'] = auth()->user()->id;
-
+    
         Post::create($validatedData);
-
+    
         return redirect('/dashboard/posts')->with('success', 'New post has been added!');
     }
 
