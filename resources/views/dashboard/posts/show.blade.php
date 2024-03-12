@@ -17,9 +17,23 @@
     </div>
 @endif
 
-    <div class="">
-        <a href="/dashboard/posts/create" class="btn btn-primary mb-3">Input Data Harian</a>
-        <a href="{{ route('dashboard.posts.importcsv') }}" class="btn btn-success mb-3">Import CSV</a>
+<div class="mb-3">
+    <div class="d-flex justify-content-between">
+        <div class="d-flex">
+            <a href="/dashboard/posts/create" class="btn btn-primary me-2">Input Data Harian</a>
+            <a href="{{ route('dashboard.posts.importcsv') }}" class="btn btn-success me-2">Import CSV</a>
+        </div>
+        <form action="{{ route('dashboard.posts.show', ['province_id' => $province->id, 'regency_id' => $regency->id]) }}" method="GET" class="d-flex w-25">
+            <select name="year" id="year" class="form-select me-1">
+                @foreach(range(date("Y"), 2018, -1) as $year)
+                    <option value="{{ $year }}" {{ $year == $selectedYear ? 'selected' : '' }}>{{ $year }}</option>
+                @endforeach
+            </select>
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </form>
+    </div>
+</div>
+
         <div class="table-responsive">
             <table class="table table-striped table-sm">
                 <thead>

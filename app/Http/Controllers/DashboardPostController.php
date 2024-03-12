@@ -138,11 +138,21 @@ public function handleCSVImport(Request $request)
         }
     
         // Fetch all posts based on the province and regency
-        $posts = Post::where('provinsi', $provinceId)->where('kabupaten', $regencyId)->get();
+        $postsQuery = Post::where('provinsi', $provinceId)->where('kabupaten', $regencyId);
+    
+        // Get the selected year from the request or use the current year as default
+        $selectedYear = request('year', date('Y'));
+    
+        if ($selectedYear) {
+            $postsQuery->whereYear('date', '=', $selectedYear);
+        }
+    
+        // Get the filtered posts
+        $posts = $postsQuery->get();
     
         // Check if there are any posts
         if ($posts->isEmpty()) {
-            return redirect()->back()->with('error', 'No data found for the specified province and regency.');
+            return redirect()->back()->with('error', 'No data found for the specified province, regency, and year.');
             // You can customize this error message as needed
         }
     
@@ -150,6 +160,7 @@ public function handleCSVImport(Request $request)
             'province' => $province,
             'regency' => $regency,
             'posts' => $posts,
+            'selectedYear' => $selectedYear, // Add this line
         ]);
     }
 

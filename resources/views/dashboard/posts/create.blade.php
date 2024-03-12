@@ -6,11 +6,11 @@
 </div>
 
 
-<div class="col-lg-8">
+<div class=""">
     <form method="post" action="/dashboard/posts" class="mb-5" enctype="multipart/form-data">
         @csrf
         <div class="mb-3 row">
-            <div class="col-md-6">
+            <div class="">
                 <label for="date" class="form-label">Date</label>
                 <div class="input-group date" id="datepicker">
                     <input type="text" class="form-control @error('date') is-invalid @enderror" placeholder="dd-mm-yyyy" id="date" name='date' required autofocus value="{{ old('date') }}">
@@ -20,7 +20,6 @@
                     </div>
                     @enderror
                     <span class="input-group-append">
-                        <!-- You can add any additional elements here if needed -->
                     </span>
                 </div>
             </div>
