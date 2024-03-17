@@ -8,7 +8,8 @@ use App\Models\User;
 use App\Models\Category;
 use App\Charts\WindspeedChart;
 
-
+use App\Models\Province;
+use App\Models\Regency;
 
 class PostController extends Controller
 {
@@ -28,13 +29,32 @@ class PostController extends Controller
 
     public function history(WindspeedChart $chart)
     {
+        $provinces = Province::all();
+        
         $title = '';
         return view('history',[
             "title" => $title,
             "active" => 'history',
             'chart' => $chart->build(),
+            'provinces' => $provinces
         ]);
     }
+
+
+    public function getkabupaten(request $request)
+    {
+        $id_provinsi = $request->id_provinsi;
+
+        $kabupatens = Regency::where('province_id', $id_provinsi)->get();
+
+        $option = "<option>-- Kabupaten/Kota --</option>";
+        foreach($kabupatens as $kabupaten){
+            $option.= "<option value='$kabupaten->id'>$kabupaten->name</option>";
+        }
+        echo $option;
+    }
+
+
 
     public function show(Post $post){
         return view('post',[

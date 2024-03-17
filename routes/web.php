@@ -37,6 +37,8 @@ Route::get('/maps', function () {
 
 
 Route::get('/history', [PostController::class, 'history']);
+
+Route::post('/getkabupaten', [PostController::class, 'getkabupaten'])->name('getkabupaten');
 // halaman single post
 Route::get('/posts/{post:slug}',[PostController::class, 'show']);
 
