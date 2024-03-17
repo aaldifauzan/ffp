@@ -27,21 +27,39 @@ class PostController extends Controller
         }
     }
 
-    public function history(WindspeedChart $chart)
+    public function home()
     {
-        $provinces = Province::all();
-        
-        $title = '';
-        return view('history',[
-            "title" => $title,
-            "active" => 'history',
-            'chart' => $chart->build(),
-            'provinces' => $provinces
+        return view('home', [
+            "title" => "Home",
+            "active" => 'home',
+        ]);
+    }
+
+    public function maps()
+    {
+        return view('maps',[
+            "title" => "About",
+            "name" => "Aldi Fauzan",
+            "email" => "aldifauzaan@student.telkomuniversity.ac.id",
+            "image" => "foto.jpg",
+            "active" => 'maps'
         ]);
     }
 
 
-    public function getkabupaten(request $request)
+    public function history(WindspeedChart $chart)
+    {
+        $provinces = Province::all();
+        
+        return view('history', compact('provinces'))->with([
+            "title" => 'History',
+            "active" => 'history',
+            'chart' => $chart->build(),
+        ]);
+    }
+
+
+    public function getkota(request $request)
     {
         $id_provinsi = $request->id_provinsi;
 

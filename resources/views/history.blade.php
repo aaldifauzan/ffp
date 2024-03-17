@@ -2,7 +2,6 @@
 
 @section('container')
     <h1>Halaman Home</h1>
-
     <div class="form-group">
       <label for="exampleFormControlSelect1">Provinsi</label>
       <select class="form-control @error('provinsi') is-invalid @enderror" id="provinsi" name="provinsi" required>
@@ -23,8 +22,8 @@
   <div class="form-group">
       <label for="exampleFormControlSelect2">Kabupaten/Kota</label>
       <select class="form-control @error('kabupaten') is-invalid @enderror" id="kabupaten" name="kabupaten">
-
-      </select>
+      <option>Pilih Kabupaten/Kota</option>
+    </select>
   </div>
     
 <div class="container px-4 mx-auto">

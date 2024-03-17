@@ -18,7 +18,7 @@ use App\Http\Controllers\DashboardPostController;
 |
 */
 
-Route::get('/', function () {
+Route::get('/home', function () {
     return view('home', [
         "title" => "Home",
         "active" => 'home',
@@ -35,10 +35,13 @@ Route::get('/maps', function () {
     ]);
 });
 
+Route::get('/home', [PostController::class, 'home'])->name('home');
+Route::get('/maps', [PostController::class, 'maps'])->name('maps');
 
-Route::get('/history', [PostController::class, 'history']);
 
-Route::post('/getkabupaten', [PostController::class, 'getkabupaten'])->name('getkabupaten');
+Route::get('/history', [PostController::class, 'history'])->name('history');
+Route::post('/getkota', [PostController::class, 'getkota'])->name('getkota');
+
 // halaman single post
 Route::get('/posts/{post:slug}',[PostController::class, 'show']);
 
