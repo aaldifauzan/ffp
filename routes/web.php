@@ -36,7 +36,7 @@ Route::get('/maps', function () {
 });
 
 
-Route::get('/posts', [PostController::class, 'index']);
+Route::get('/history', [PostController::class, 'index']);
 // halaman single post
 Route::get('/posts/{post:slug}',[PostController::class, 'show']);
 
@@ -49,13 +49,6 @@ Route::get('/login', function () {
     ]);
 });
 
-Route::get('/categories', function() {
-    return view('categories', [
-        'title' => 'Post Categories',
-        "active" => 'categories',
-        'categories' => Category::all()
-    ]);
-});
 
 
 Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');

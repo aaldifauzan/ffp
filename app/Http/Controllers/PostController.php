@@ -21,9 +21,9 @@ class PostController extends Controller
             $author = User::firstWhere('username', request('author'));
             $title =  ' by ' . $author->name;
         }
-        return view('posts',[
+        return view('history',[
             "title" => "All Posts" . $title,
-            "active" => 'posts',
+            "active" => 'history',
             "posts" => Post::latest()->filter(request(['search', 'category', 'author']))->paginate(7)->withQueryString()
         ]);
     }
