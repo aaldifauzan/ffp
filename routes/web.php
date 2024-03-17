@@ -36,7 +36,7 @@ Route::get('/maps', function () {
 });
 
 
-Route::get('/history', [PostController::class, 'index']);
+Route::get('/history', [PostController::class, 'history']);
 // halaman single post
 Route::get('/posts/{post:slug}',[PostController::class, 'show']);
 

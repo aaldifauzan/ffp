@@ -6,10 +6,13 @@ use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Category;
+use App\Charts\WindspeedChart;
+
+
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(WindspeedChart $chart)
     {
         $title = '';
         if(request('category')){
@@ -21,10 +24,15 @@ class PostController extends Controller
             $author = User::firstWhere('username', request('author'));
             $title =  ' by ' . $author->name;
         }
+    }
+
+    public function history(WindspeedChart $chart)
+    {
+        $title = '';
         return view('history',[
-            "title" => "All Posts" . $title,
+            "title" => $title,
             "active" => 'history',
-            "posts" => Post::latest()->filter(request(['search', 'category', 'author']))->paginate(7)->withQueryString()
+            'chart' => $chart->build(),
         ]);
     }
 
