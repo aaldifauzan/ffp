@@ -18,22 +18,6 @@ use App\Http\Controllers\DashboardPostController;
 |
 */
 
-Route::get('/home', function () {
-    return view('home', [
-        "title" => "Home",
-        "active" => 'home',
-    ]);
-});
-
-Route::get('/maps', function () {
-    return view('maps',[
-        "title" => "About",
-        "name" => "Aldi Fauzan",
-        "email" => "aldifauzaan@student.telkomuniversity.ac.id",
-        "image" => "foto.jpg",
-        "active" => 'maps'
-    ]);
-});
 
 Route::get('/home', [PostController::class, 'home'])->name('home');
 Route::get('/maps', [PostController::class, 'maps'])->name('maps');
@@ -45,14 +29,6 @@ Route::post('/getkota', [PostController::class, 'getkota'])->name('getkota');
 // halaman single post
 Route::get('/posts/{post:slug}',[PostController::class, 'show']);
 
-Route::get('/login', function () {
-    return view('login',[
-        "title" => "About",
-        "name" => "Aldi Fauzan",
-        "email" => "aldifauzaan@student.telkomuniversity.ac.id",
-        "image" => "foto.jpg"
-    ]);
-});
 
 
 

@@ -25,6 +25,8 @@
       <option>Pilih Kabupaten/Kota</option>
     </select>
   </div>
+
+  <button type="submit" class="btn btn-primary">Filter</button>
     
 <div class="container px-4 mx-auto">
 
