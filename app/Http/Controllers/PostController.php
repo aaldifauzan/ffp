@@ -37,14 +37,47 @@ class PostController extends Controller
         ]);
     }
 
-    public function maps()
-    {
-        return view('maps',[
-            "title" => "Maps",
-            "active" => 'maps'
-        ]);
-    }
+    // public function maps()
+    // {
+    //     return view('maps',[
+    //         "title" => "Maps",
+    //         "active" => 'maps'
+    //     ]);
+    // }
 
+    public function maps(Request $request)
+    {
+        $provinces = Province::all();
+        $selectedProvinsi = $request->query('provinsi');
+        // $selectedKabupaten = $request->query('kabupaten');
+        // $startDate = $request->input('start_date');
+        // $endDate = $request->input('end_date');
+        
+        // Fetch data based on selected filters
+        $postsQuery = Post::query();
+        if ($selectedProvinsi) {
+            $postsQuery->where('provinsi', $selectedProvinsi);
+        }
+        // if ($selectedKabupaten) {
+        //     $postsQuery->where('kabupaten', $selectedKabupaten);
+        // }
+        
+        // // Limit data to the specified date range
+        // if ($startDate && $endDate) {
+        //     $postsQuery->whereBetween('date', [$startDate, $endDate]);
+        // }
+    
+        // Get posts data
+        $posts = $postsQuery->get();
+
+        // Define the title
+        $title = 'Maps';
+    
+        // Define the active page
+        $active = 'maps';
+    
+        return view('maps', compact('provinces', 'title', 'active', 'selectedProvinsi'));
+    }
 
 
     public function history(Request $request, WindspeedChart $chart1)
