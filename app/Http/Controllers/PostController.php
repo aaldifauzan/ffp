@@ -71,6 +71,11 @@ class PostController extends Controller
     
         // Get posts data
         $posts = $postsQuery->get();
+    
+        // If no data found, set error message in session
+        if ($posts->isEmpty()) {
+            return redirect()->back()->with('error', 'No data found matching the provided filters.');
+        }
         
         // Extract windspeed and date data for chart
         $chartData = $posts->pluck('windspeed')->toArray();
