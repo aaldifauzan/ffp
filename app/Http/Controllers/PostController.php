@@ -11,6 +11,8 @@ use App\Charts\WindspeedChart;
 use App\Models\Province;
 use App\Models\Regency;
 
+use Carbon\Carbon;
+
 class PostController extends Controller
 {
     public function index(WindspeedChart $chart)
@@ -38,25 +40,57 @@ class PostController extends Controller
     public function maps()
     {
         return view('maps',[
-            "title" => "About",
-            "name" => "Aldi Fauzan",
-            "email" => "aldifauzaan@student.telkomuniversity.ac.id",
-            "image" => "foto.jpg",
+            "title" => "Maps",
             "active" => 'maps'
         ]);
     }
 
 
-    public function history(WindspeedChart $chart)
+
+    public function history(Request $request, WindspeedChart $chart1)
     {
         $provinces = Province::all();
+        $selectedProvinsi = $request->query('provinsi');
+        $selectedKabupaten = $request->query('kabupaten');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
         
-        return view('history', compact('provinces'))->with([
-            "title" => 'History',
-            "active" => 'history',
-            'chart' => $chart->build(),
-        ]);
+        // Fetch data based on selected filters
+        $postsQuery = Post::query();
+        if ($selectedProvinsi) {
+            $postsQuery->where('provinsi', $selectedProvinsi);
+        }
+        if ($selectedKabupaten) {
+            $postsQuery->where('kabupaten', $selectedKabupaten);
+        }
+        
+        // Limit data to the specified date range
+        if ($startDate && $endDate) {
+            $postsQuery->whereBetween('date', [$startDate, $endDate]);
+        }
+    
+        // Get posts data
+        $posts = $postsQuery->get();
+        
+        // Extract windspeed and date data for chart
+        $chartData = $posts->pluck('windspeed')->toArray();
+        $chartLabels = $posts->pluck('date')->toArray();
+    
+        // Build the chart
+        $chart1 = $chart1->build($chartData, $chartLabels);
+    
+        // Define the title
+        $title = 'History';
+    
+        // Define the active page
+        $active = 'history';
+    
+        return view('history', compact('provinces', 'chart1', 'title', 'active'));
     }
+    
+    
+    
+    
 
 
     public function getkota(request $request)
@@ -72,13 +106,4 @@ class PostController extends Controller
         echo $option;
     }
 
-
-
-    public function show(Post $post){
-        return view('post',[
-            "title" => "Single Post",
-            "active" => 'posts',
-            "post" => $post
-        ]);
-    }
 }

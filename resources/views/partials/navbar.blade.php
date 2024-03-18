@@ -1,21 +1,21 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container">
-    <a class="navbar-brand" href="/">Forest Fire Prediction</a>
+    <a class="navbar-brand" href="/home">Forest Fire Prediction</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link {{ ($active === "home") ? 'active' : '' }}" href="/">Home</a>
+            <a class="nav-link {{ ($active === "home") ? 'active' : '' }}" href="{{ route('home') }}">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {{ ($active === "maps") ? 'active' : '' }}" href="/maps">Maps</a>
+            <a class="nav-link {{ ($active === "maps") ? 'active' : '' }}" href="{{ route('maps') }}">Maps</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {{ ($active === "history") ? 'active' : '' }}" href="/history">History</a>
+            <a class="nav-link {{ ($active === "history") ? 'active' : '' }}" href="{{ route('history') }}">History</a>
         </li>
-      </ul>
+    </ul>
 
 
       <ul class="navbar-nav ml-auto">

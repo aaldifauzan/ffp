@@ -6,19 +6,18 @@ use ArielMejiaDev\LarapexCharts\LarapexChart;
 
 class WindspeedChart
 {
-    protected $chart;
+    protected $chart1;
 
-    public function __construct(LarapexChart $chart)
+    public function __construct(LarapexChart $chart1)
     {
-        $this->chart = $chart;
+        $this->chart1 = $chart1;
     }
 
-    public function build(): \ArielMejiaDev\LarapexCharts\LineChart
+    public function build($data, $labels): \ArielMejiaDev\LarapexCharts\LineChart
     {
-        return $this->chart->lineChart()
+        return $this->chart1->lineChart()
             ->setTitle('Windspeed')
-            // ->setSubtitle('Physical sales vs Digital sales.')
-            ->addData('Windspeed', [70, 29, 77, 28, 55, 45])
-            ->setXAxis(['January', 'February', 'March', 'April', 'May', 'June']);
+            ->setLabels($labels)
+            ->addData('Windspeed', $data);
     }
 }
