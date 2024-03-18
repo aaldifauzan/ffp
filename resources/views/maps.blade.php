@@ -29,29 +29,47 @@
         <button type="submit" class="btn btn-primary">Filter</button>
     </form>
 
+    <div id="map"></div>
+
     <style>
         #map { height: 500px; }
-        </style>
-     </head>
-     <body>
-         <div id="map"></div>
-     </body>
+    </style>
+<script>
+    var map = L.map('map').setView([-1.269160, 116.825264], 5);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
 
-    <script>
-        var map = L.map('map').setView([-1.269160, 116.825264], 5);
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
+    // Get the selected province ID from the form
+    var selectedProvinsi = "{{ $selectedProvinsi }}";
+    var selectedKabupaten = "{{ $selectedKabupaten }}"; // Ambil ID kabupaten jika tersedia
 
-        // Get the selected province ID from the form
-        var selectedProvinsi = "{{ $selectedProvinsi }}";
-        
-        // Fetch the corresponding geojson file based on the selected province
-        fetch("/geojson/provinces/" + selectedProvinsi + ".geojson") 
-        .then(res => res.json())
-        .then(data => {
-            L.geoJson(data).addTo(map);
-        });
-    </script>
+    // Tentukan jalur geojson berdasarkan input pengguna
+    var geojsonPath = "";
+
+    if (selectedProvinsi) {
+        geojsonPath = "/geojson/provinces/" + selectedProvinsi + ".geojson";
+    }
+
+    if (selectedKabupaten && selectedKabupaten !== "-- Kabupaten/Kota --") {
+        // Ambil dua digit pertama dari ID kabupaten
+        var regencyId = selectedKabupaten.substr(2); 
+
+        // Gabungkan ID provinsi dan ID kabupaten untuk membentuk path yang sesuai
+        geojsonPath = "/geojson/regencies/" + selectedProvinsi + "." + regencyId + ".geojson";
+    }
+
+    if (geojsonPath) {
+        // Fetch the corresponding geojson file based on the selected province or province and kabupaten
+        fetch(geojsonPath)
+            .then(res => res.json())
+            .then(data => {
+                L.geoJson(data).addTo(map);
+            });
+    }
+</script>
+
+
+
 @endsection
