@@ -113,7 +113,7 @@ class PostController extends Controller
         // Define the active page
         $active = 'history';
     
-        return view('history', compact('provinces', 'chart1', 'title', 'active'));
+        return view('history', compact('provinces', 'chart1', 'title', 'active', 'selectedProvinsi', 'startDate', 'endDate', 'selectedKabupaten'));
     }
     
     

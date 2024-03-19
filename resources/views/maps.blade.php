@@ -6,9 +6,9 @@
             <div class="form-group col-md-6">
                 <label for="provinsi">Provinsi</label>
                 <select class="form-control @error('provinsi') is-invalid @enderror" id="provinsi" name="provinsi" required>
-                    <option value="" @if(old('provinsi') == '') selected @endif>-- Provinsi --</option>
+                    <option value="" @if(!$selectedProvinsi) selected @endif>-- Provinsi --</option>
                     @foreach ($provinces as $provinsi)
-                        <option value="{{ $provinsi->id }}" @if(old('provinsi') == $provinsi->id) selected @endif>
+                        <option value="{{ $provinsi->id }}" @if($selectedProvinsi == $provinsi->id) selected @endif>
                             {{ $provinsi->name }}
                         </option>
                     @endforeach
@@ -22,9 +22,22 @@
             <div class="form-group col-md-6">
                 <label for="kabupaten">Kabupaten/Kota</label>
                 <select class="form-control @error('kabupaten') is-invalid @enderror" id="kabupaten" name="kabupaten">
-                    <option>-- Kabupaten/Kota --</option>
+                    <option value="" @if(!$selectedKabupaten) selected @endif>-- Kabupaten/Kota --</option>
+                    @if($selectedProvinsi)
+                        @foreach ($provinces->find($selectedProvinsi)->regencies ?? [] as $kabupaten)
+                            <option value="{{ $kabupaten->id }}" @if($selectedKabupaten == $kabupaten->id) selected @endif>
+                                {{ $kabupaten->name }}
+                            </option>
+                        @endforeach
+                    @endif
                 </select>
+                @error('kabupaten')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
             </div>
+            
         </div>
         <button type="submit" class="btn btn-primary">Filter</button>
     </form>
@@ -35,7 +48,7 @@
         #map { height: 500px; }
     </style>
 <script>
-    var map = L.map('map').setView([-1.269160, 116.825264], 5);
+    var map = L.map('map').setView([-1.269160, 117.825264], 5);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
