@@ -91,10 +91,10 @@ class PostController extends Controller
         if ($startDate && $endDate) {
             $postsQuery->whereBetween('date', [$startDate, $endDate]);
         }
-    
+
         // Get posts data
         $posts = $postsQuery->get();
-    
+
         // If no data found, set error message in session
         if ($posts->isEmpty()) {
             return redirect()->back()->with('error', 'No data found matching the provided filters.');
@@ -107,17 +107,25 @@ class PostController extends Controller
         // Extract data for humidity chart
         $humidityChartData = $posts->pluck('humidity')->toArray();
 
+        // Extract data for rainfall chart
+        $rainfallChartData = $posts->pluck('rainfall')->toArray();
+
+        // Extract data for temperature chart
+        $temperatureChartData = $posts->pluck('temperature')->toArray();
+
         // Build weather charts
         $chart1 = $weatherChart->buildWindspeedChart($windspeedChartData, $chartLabels);
         $chart2 = $weatherChart->buildHumidityChart($humidityChartData, $chartLabels);
-    
+        $chart3 = $weatherChart->buildRainfallChart($rainfallChartData, $chartLabels);
+        $chart4 = $weatherChart->buildTemperatureChart($temperatureChartData, $chartLabels); // Build temperature chart
+
         // Define the title
         $title = 'History';
-    
+
         // Define the active page
         $active = 'history';
-    
-        return view('history', compact('provinces', 'chart1', 'chart2', 'title', 'active', 'selectedProvinsi', 'startDate', 'endDate', 'selectedKabupaten'));
+
+        return view('history', compact('provinces', 'chart1', 'chart2', 'chart3', 'chart4', 'title', 'active', 'selectedProvinsi', 'startDate', 'endDate', 'selectedKabupaten'));
     }
     
     

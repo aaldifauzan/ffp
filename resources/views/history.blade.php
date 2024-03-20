@@ -78,5 +78,22 @@
         </div>
         <script src="{{ $chart2->cdn() }}"></script>
         {{ $chart2->script() }}
+
+        <!-- Add rainfall chart -->
+        <div class="container px-4 mx-auto">
+            <div class="p-6 m-20 bg-white rounded shadow">
+                {!! $chart3->container() !!}
+            </div>
+        </div>
+        <script src="{{ $chart3->cdn() }}"></script>
+        {{ $chart3->script() }}
+
+        <div class="container px-4 mx-auto">
+            <div class="p-6 m-20 bg-white rounded shadow">
+                {!! $chart4->container() !!}
+            </div>
+        </div>
+        <script src="{{ $chart4->cdn() }}"></script>
+        {{ $chart4->script() }}
     @endif
 @endsection
