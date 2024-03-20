@@ -70,5 +70,13 @@
         </div>
         <script src="{{ $chart1->cdn() }}"></script>
         {{ $chart1->script() }}
+
+        <div class="container px-4 mx-auto">
+            <div class="p-6 m-20 bg-white rounded shadow">
+                {!! $chart2->container() !!}
+            </div>
+        </div>
+        <script src="{{ $chart2->cdn() }}"></script>
+        {{ $chart2->script() }}
     @endif
 @endsection

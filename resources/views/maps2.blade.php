@@ -54,53 +54,45 @@
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
-    // Function to handle click events on the map
-    function onMapClick(e) {
-        // Perform reverse geocoding to get the province/regency name based on the clicked coordinates
-        fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + e.latlng.lat + '&lon=' + e.latlng.lng)
-            .then(response => response.json())
-            .then(data => {
-                var address = data.address;
-                var province = address.state; // Check for province/state/region
-                var regency = address.city || address.county; // Check for city, town, or village for regency
-                var popupContent = "<strong>Province:</strong> " + province + "<br>" +
-                                   "<strong>Regency:</strong> " + regency + "<br>" +
-                                   "<a href='https://www.google.com/maps?q=" + e.latlng.lat + "," + e.latlng.lng + "' target='_blank'>See on Google Maps</a>";
-
-                var popup = L.popup()
-                    .setLatLng(e.latlng)
-                    .setContent(popupContent)
-                    .openOn(map);
-            })
-            .catch(error => console.error('Error:', error));
-    }
-
-    // Adding click event listener to the map
-    map.on('click', onMapClick);
-
-    // Your existing code to fetch and display GeoJSON data
+    // Get the selected province ID from the form
     var selectedProvinsi = "{{ $selectedProvinsi }}";
-    var selectedKabupaten = "{{ $selectedKabupaten }}"; // Ambil ID kabupaten jika tersedia
 
-    var geojsonPath = "";
+    // Tentukan jalur geojson berdasarkan input pengguna
+    var geojsonPaths = [];
 
     if (selectedProvinsi) {
-        geojsonPath = "/geojson/provinces/" + selectedProvinsi + ".geojson";
+        // Ambil semua data kabupaten yang dimulai dengan ID provinsi yang dipilih
+        for (var i = 1; i <= 80; i++) {
+            // Format nomor kabupaten dengan dua digit
+            var regencyId = ("00" + i).slice(-2);
+            // Bentuk jalur sesuai dengan pola yang diinginkan
+            geojsonPaths.push("/geojson/regencies/" + selectedProvinsi + "." + regencyId + ".geojson");
+        }
     }
 
-    if (selectedKabupaten && selectedKabupaten !== "-- Kabupaten/Kota --") {
-        var regencyId = selectedKabupaten.substr(2); 
-        geojsonPath = "/geojson/regencies/" + selectedProvinsi + "." + regencyId + ".geojson";
+    // Fungsi untuk menambahkan GeoJSON ke peta
+    function addGeoJsonToMap(geojson) {
+        L.geoJson(geojson).addTo(map);
     }
 
-    if (geojsonPath) {
-        fetch(geojsonPath)
-            .then(res => res.json())
+    // Fungsi untuk mengambil data GeoJSON
+    function fetchData(path) {
+        fetch(path)
+            .then(response => response.json())
             .then(data => {
-                L.geoJson(data).addTo(map);
+                addGeoJsonToMap(data);
+            })
+            .catch(error => {
+                console.error('Error fetching geojson data:', error);
             });
     }
+
+    // Ambil semua file GeoJSON yang sesuai dengan pola yang ditentukan
+    geojsonPaths.forEach(path => {
+        fetchData(path);
+    });
 </script>
+
 
 
 

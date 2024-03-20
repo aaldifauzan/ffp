@@ -6,18 +6,18 @@ use ArielMejiaDev\LarapexCharts\LarapexChart;
 
 class WindspeedChart
 {
-    protected $chart1;
+    protected $chart2;
 
-    public function __construct(LarapexChart $chart1)
+    public function __construct(LarapexChart $chart2)
     {
-        $this->chart1 = $chart1;
+        $this->chart2 = $chart2;
     }
 
     public function build($data, $labels): \ArielMejiaDev\LarapexCharts\LineChart
     {
-        return $this->chart1->lineChart()
-            ->setTitle('Windspeed')
+        return $this->chart2->lineChart()
+            ->setTitle('Humidity')
             ->setLabels($labels)
-            ->addData('Windspeed', $data);
+            ->addData('Humidity', $data);
     }
 }

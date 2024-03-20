@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Category;
-use App\Charts\WindspeedChart;
+use App\Charts\WeatherChart;
 
 use App\Models\Province;
 use App\Models\Regency;
@@ -15,7 +15,7 @@ use Carbon\Carbon;
 
 class PostController extends Controller
 {
-    public function index(WindspeedChart $chart)
+    public function index()
     {
         $title = '';
         if(request('category')){
@@ -70,7 +70,7 @@ class PostController extends Controller
     }
 
 
-    public function history(Request $request, WindspeedChart $chart1)
+    public function history(Request $request, WeatherChart $weatherChart)
     {
         $provinces = Province::all();
         $selectedProvinsi = $request->query('provinsi');
@@ -100,12 +100,16 @@ class PostController extends Controller
             return redirect()->back()->with('error', 'No data found matching the provided filters.');
         }
         
-        // Extract windspeed and date data for chart
-        $chartData = $posts->pluck('windspeed')->toArray();
+        // Extract data for windspeed chart
+        $windspeedChartData = $posts->pluck('windspeed')->toArray();
         $chartLabels = $posts->pluck('date')->toArray();
-    
-        // Build the chart
-        $chart1 = $chart1->build($chartData, $chartLabels);
+
+        // Extract data for humidity chart
+        $humidityChartData = $posts->pluck('humidity')->toArray();
+
+        // Build weather charts
+        $chart1 = $weatherChart->buildWindspeedChart($windspeedChartData, $chartLabels);
+        $chart2 = $weatherChart->buildHumidityChart($humidityChartData, $chartLabels);
     
         // Define the title
         $title = 'History';
@@ -113,7 +117,7 @@ class PostController extends Controller
         // Define the active page
         $active = 'history';
     
-        return view('history', compact('provinces', 'chart1', 'title', 'active', 'selectedProvinsi', 'startDate', 'endDate', 'selectedKabupaten'));
+        return view('history', compact('provinces', 'chart1', 'chart2', 'title', 'active', 'selectedProvinsi', 'startDate', 'endDate', 'selectedKabupaten'));
     }
     
     
