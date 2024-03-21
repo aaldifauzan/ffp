@@ -9,45 +9,57 @@ class WeatherChart
     protected $windspeedChart;
     protected $humidityChart;
     protected $rainfallChart;
-    protected $temperatureChart; // Menambahkan properti untuk grafik suhu
+    protected $temperatureChart; // Adding property for temperature chart
 
-    public function __construct(LarapexChart $chart1, LarapexChart $chart2, LarapexChart $chart3, LarapexChart $chart4) // Menambahkan parameter untuk grafik suhu
+    public function __construct(LarapexChart $chart1, LarapexChart $chart2, LarapexChart $chart3, LarapexChart $chart4) // Adding parameter for temperature chart
     {
         $this->windspeedChart = $chart1;
         $this->humidityChart = $chart2;
         $this->rainfallChart = $chart3;
-        $this->temperatureChart = $chart4; // Menginisialisasi properti grafik suhu
+        $this->temperatureChart = $chart4; // Initializing temperature chart property
     }
 
     public function buildWindspeedChart($data, $labels): \ArielMejiaDev\LarapexCharts\LineChart
     {
+        $roundedData = array_map(function ($value) {
+            return round($value, 2); // Rounding to two decimal places
+        }, $data);
         return $this->windspeedChart->lineChart()
             ->setTitle('Windspeed')
             ->setLabels($labels)
-            ->addData('Windspeed', $data);
+            ->addData('Windspeed', $roundedData);
     }
-
+    
     public function buildHumidityChart($data, $labels): \ArielMejiaDev\LarapexCharts\LineChart
     {
+        $roundedData = array_map(function ($value) {
+            return round($value, 2); // Rounding to two decimal places
+        }, $data);
         return $this->humidityChart->lineChart()
             ->setTitle('Humidity')
             ->setLabels($labels)
-            ->addData('Humidity', $data);
+            ->addData('Humidity', $roundedData);
     }
-
+    
     public function buildRainfallChart($data, $labels): \ArielMejiaDev\LarapexCharts\LineChart
     {
+        $roundedData = array_map(function ($value) {
+            return round($value, 2); // Rounding to two decimal places
+        }, $data);
         return $this->rainfallChart->lineChart()
             ->setTitle('Rainfall')
             ->setLabels($labels)
-            ->addData('Rainfall', $data);
+            ->addData('Rainfall', $roundedData);
     }
-
+    
     public function buildTemperatureChart($data, $labels): \ArielMejiaDev\LarapexCharts\LineChart
     {
+        $roundedData = array_map(function ($value) {
+            return round($value, 4); // Rounding to two decimal places
+        }, $data);
         return $this->temperatureChart->lineChart()
             ->setTitle('Temperature')
             ->setLabels($labels)
-            ->addData('Temperature', $data);
+            ->addData('Temperature', $roundedData);
     }
 }

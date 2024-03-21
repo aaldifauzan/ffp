@@ -5,8 +5,8 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="provinsi">Provinsi</label>
-                <select class="form-control @error('provinsi') is-invalid @enderror" id="provinsi" name="provinsi" required>
-                    <option value="" @if(!$selectedProvinsi) selected @endif>-- Provinsi --</option>
+                <select class="form-control @error('provinsi') is-invalid @enderror" id="provinsi" name="provinsi">
+                    <option value="" @if(!$selectedProvinsi) selected @endif>Semua Provinsi</option>
                     @foreach ($provinces as $provinsi)
                         <option value="{{ $provinsi->id }}" @if($selectedProvinsi == $provinsi->id) selected @endif>
                             {{ $provinsi->name }}
@@ -51,7 +51,7 @@
     var map = L.map('map').setView([-1.269160, 117.825264], 5);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map);
 
     // Function to handle click events on the map
@@ -61,10 +61,10 @@
             .then(response => response.json())
             .then(data => {
                 var address = data.address;
-                var province = address.state; // Check for province/state/region
-                var regency = address.city || address.county; // Check for city, town, or village for regency
-                var popupContent = "<strong>Province:</strong> " + province + "<br>" +
-                                   "<strong>Regency:</strong> " + regency + "<br>" +
+                var province = address.state || address.city; // Check for province/state/region
+                var regency = address.city || address.town || address.county || address.village; // Check for city, town, or village for regency
+                var popupContent = "<strong>Province: </strong>" + province + "<br>" +
+                                   "<strong>Regency: </strong> " + regency + "<br>" +
                                    "<a href='https://www.google.com/maps?q=" + e.latlng.lat + "," + e.latlng.lng + "' target='_blank'>See on Google Maps</a>";
 
                 var popup = L.popup()
@@ -82,25 +82,57 @@
     var selectedProvinsi = "{{ $selectedProvinsi }}";
     var selectedKabupaten = "{{ $selectedKabupaten }}"; // Ambil ID kabupaten jika tersedia
 
-    var geojsonPath = "";
+    var geojsonProvinsiPath = "";
+    var geojsonKabupatenPath = "";
 
-    if (selectedProvinsi) {
-        geojsonPath = "/geojson/provinces/" + selectedProvinsi + ".geojson";
+    if (selectedProvinsi === "") {
+        geojsonProvinsiPath = "/geojson/alldata.geojson"; // If "Semua Provinsi" is selected
+    } else {
+        if (selectedProvinsi) {
+            geojsonProvinsiPath = "/geojson/provinces/" + selectedProvinsi + ".geojson";
+        }
+
+        if (selectedKabupaten && selectedKabupaten !== "-- Kabupaten/Kota --") {
+            var regencyId = selectedKabupaten.substr(2); 
+            geojsonKabupatenPath = "/geojson/regencies/" + selectedProvinsi + "." + regencyId + ".geojson";
+        }
     }
 
-    if (selectedKabupaten && selectedKabupaten !== "-- Kabupaten/Kota --") {
-        var regencyId = selectedKabupaten.substr(2); 
-        geojsonPath = "/geojson/regencies/" + selectedProvinsi + "." + regencyId + ".geojson";
-    }
-
-    if (geojsonPath) {
-        fetch(geojsonPath)
+    if (geojsonProvinsiPath) {
+        fetch(geojsonProvinsiPath)
             .then(res => res.json())
             .then(data => {
-                L.geoJson(data).addTo(map);
+                // Add GeoJSON layer for provinsi to map with blue color
+                var geojsonLayer = L.geoJson(data, {
+                    style: {
+                        weight: 1
+                    }
+                }).addTo(map);
+                
+                // Fit map to the bounds of the GeoJSON layer
+                map.fitBounds(geojsonLayer.getBounds());
+            });
+    }
+
+    if (geojsonKabupatenPath) {
+        fetch(geojsonKabupatenPath)
+            .then(res => res.json())
+            .then(data => {
+                // Add GeoJSON layer for kabupaten to map with red color
+                var geojsonLayer = L.geoJson(data, {
+                    style: {
+                        color: "red",
+                        weight: 1
+                    }
+                }).addTo(map);
+                
+                // Fit map to the bounds of the GeoJSON layer
+                map.fitBounds(geojsonLayer.getBounds());
             });
     }
 </script>
+
+
 
 
 
