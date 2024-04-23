@@ -27,7 +27,8 @@ class WeatherChart
         return $this->windspeedChart->lineChart()
             ->setTitle('Windspeed')
             ->setLabels($labels)
-            ->addData('Windspeed', $roundedData);
+            ->addData('Windspeed', $roundedData)
+            ->setStroke(2);
     }
     
     public function buildHumidityChart($data, $labels): \ArielMejiaDev\LarapexCharts\LineChart
@@ -38,7 +39,8 @@ class WeatherChart
         return $this->humidityChart->lineChart()
             ->setTitle('Humidity')
             ->setLabels($labels)
-            ->addData('Humidity', $roundedData);
+            ->addData('Humidity', $roundedData)
+            ->setStroke(2);
     }
     
     public function buildRainfallChart($data, $labels): \ArielMejiaDev\LarapexCharts\LineChart
@@ -49,7 +51,8 @@ class WeatherChart
         return $this->rainfallChart->lineChart()
             ->setTitle('Rainfall')
             ->setLabels($labels)
-            ->addData('Rainfall', $roundedData);
+            ->addData('Rainfall', $roundedData)
+            ->setStroke(2);
     }
     
     public function buildTemperatureChart($data, $labels): \ArielMejiaDev\LarapexCharts\LineChart
@@ -60,6 +63,7 @@ class WeatherChart
         return $this->temperatureChart->lineChart()
             ->setTitle('Temperature')
             ->setLabels($labels)
-            ->addData('Temperature', $roundedData);
+            ->addData('Temperature', $roundedData)
+            ->setStroke(2);
     }
 }

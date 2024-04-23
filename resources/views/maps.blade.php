@@ -40,6 +40,7 @@
             
         </div>
         <button type="submit" class="btn btn-primary">Filter</button>
+        <button id="queryButton" class="btn btn-primary mt-3">Query</button>
     </form>
 
     <div id="map"></div>
