@@ -19,7 +19,7 @@ use App\Http\Controllers\DashboardPostController;
 */
 
 
-Route::get('/home', [PostController::class, 'home'])->name('home');
+Route::get('/', [PostController::class, 'home'])->name('home');
 Route::get('/maps', [PostController::class, 'maps'])->name('maps');
 
 
