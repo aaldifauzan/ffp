@@ -47,7 +47,12 @@
                     <th scope="col">Rainfall</th>
                     <th scope="col">Rainfall Predict</th>
                     <th scope="col">Windspeed</th>
-                    <th scope="col">Windspeed Predict</th>
+                    <th scope="col">FFMC</th>
+                    <th scope="col">DMC</th>
+                    <th scope="col">DC</th>
+                    <th scope="col">ISI</th>
+                    <th scope="col">BUI</th>
+                    <th scope="col">FWI</th>
                     <th scope="col">Action</th>
                 </tr>
             </thead>
@@ -59,6 +64,11 @@
                                               ->where('provinsi', $post1->provinsi)
                                               ->where('kabupaten', $post1->kabupaten)
                                               ->first();
+                        // Cari data Fwi yang sesuai dengan tanggal, provinsi, dan kabupaten dari Post
+                        $fwi = $posts3->where('date', $post1->date)
+                                      ->where('provinsi', $post1->provinsi)
+                                      ->where('kabupaten', $post1->kabupaten)
+                                      ->first();
                     @endphp
                     <tr>
                         <td>{{ $loop->iteration }}</td>
@@ -70,7 +80,12 @@
                         <td>{{ $post1->rainfall }}</td>
                         <td>{{ $postPredict ? $postPredict->rainfall_predict : '-' }}</td>
                         <td>{{ $post1->windspeed }}</td>
-                        <td>{{ $postPredict ? $postPredict->windspeed_predict : '-' }}</td>
+                        <td>{{ $fwi ? $fwi->ffmc : '-' }}</td>
+                        <td>{{ $fwi ? $fwi->dmc : '-' }}</td>
+                        <td>{{ $fwi ? $fwi->dc : '-' }}</td>
+                        <td>{{ $fwi ? $fwi->isi : '-' }}</td>
+                        <td>{{ $fwi ? $fwi->bui : '-' }}</td>
+                        <td>{{ $fwi ? $fwi->fwi : '-' }}</td>
                         <td>
                             <a href="{{ route('dashboard.posts.edit', ['province_id' => $province->id, 'regency_id' => $regency->id, 'post_id' => $post1->id]) }}" class="badge bg-warning">
                                 <span data-feather="edit"></span>

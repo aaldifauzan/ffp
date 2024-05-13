@@ -24,7 +24,7 @@
             <h1 class="h3 mb-3 fw-normal text-center">Please Login</h1>
             <form action="/login" method="POST">
               @csrf
-              <div class="form-floating">
+              <div class="form-floating mb-3">
                 <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" id="email" placeholder="Email address" autofocus required value={{ old('email') }}>
                 @error('email')
                   <div class="invalid-feedback">

@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container">
-    <a class="navbar-brand" href="/home">Forest Fire Prediction</a>
+    <a class="navbar-brand" href="/">Forest Fire Prediction</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -28,7 +28,7 @@
                     <li><a class="dropdown-item" href="/dashboard"><i class="bi bi-layout-text-sidebar-reverse"></i> My Dashboard</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
-                      <form action="/logout" method="POST">
+                      <form action="/" method="POST">
                         @csrf
                         <button type="submit" class="dropdown-item"><i class="bi bi-box-arrow-right"></i> Logout</button>
                       </form>

@@ -8,7 +8,7 @@
             <h1 class="h3 mb-3 fw-normal text-center">Registration Form</h1>
             <form action="/register" method="POST">
                 @csrf
-              <div class="form-floating">
+              <div class="form-floating mb-3">
                 <input type="text" name="name" class="form-control rounded-top @error('name') is-invalid @enderror" id="name" placeholder="Name" required value="{{ old('name') }}">
                 @error('name')
                     <div class="invalid-feedback">
@@ -16,15 +16,15 @@
                     </div>
                 @enderror
               </div>                
-              <div class="form-floating">
+              <div class="form-floating mb-3">
                 <input type="text" name="username" class="form-control @error('username') is-invalid @enderror" id="username" placeholder="Username" required value="{{ old('username') }}">
                 @error('username')
                     <div class="invalid-feedback">
                         {{ $message }}
                     </div>
                 @enderror
-              </div>                
-              <div class="form-floating">
+              </div>
+              <div class="form-floating mb-3">
                 <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" id="email" placeholder="Email address" required value="{{ old('email') }}">
                 @error('email')
                     <div class="invalid-feedback">
@@ -32,7 +32,7 @@
                     </div>
                 @enderror
               </div>
-              <div class="form-floating">
+              <div class="form-floating mb-3">
                 <input type="password" name="password" class="form-control rounded-bottom @error('password') is-invalid @enderror" id="password" placeholder="Password" required>
                 @error('password')
                     <div class="invalid-feedback">
