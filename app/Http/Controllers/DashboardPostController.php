@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\PostPredict;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -147,20 +148,23 @@ public function handleCSVImport(Request $request)
         }
     
         // Fetch all posts based on the province and regency
-        $postsQuery = Post::where('provinsi', $provinceId)->where('kabupaten', $regencyId);
+        $postsQuery1 = Post::where('provinsi', $provinceId)->where('kabupaten', $regencyId);
+        $postsQuery2 = PostPredict::where('provinsi', $provinceId)->where('kabupaten', $regencyId);
     
         // Get the selected year from the request or use the current year as default
         $selectedYear = request('year', date('Y'));
     
         if ($selectedYear) {
-            $postsQuery->whereYear('date', '=', $selectedYear);
+            $postsQuery1->whereYear('date', '=', $selectedYear);
+            $postsQuery2->whereYear('date', '=', $selectedYear);
         }
     
         // Get the filtered posts
-        $posts = $postsQuery->get();
+        $posts1 = $postsQuery1->get();
+        $posts2 = $postsQuery2->get();
     
         // Check if there are any posts
-        if ($posts->isEmpty()) {
+        if ($posts1->isEmpty()) {
             return redirect()->back()->with('error', 'No data found for the specified province, regency, and year.');
             // You can customize this error message as needed
         }
@@ -168,7 +172,8 @@ public function handleCSVImport(Request $request)
         return view('dashboard.posts.show', [
             'province' => $province,
             'regency' => $regency,
-            'posts' => $posts,
+            'posts1' => $posts1,
+            'posts2' => $posts2,
             'selectedYear' => $selectedYear, // Add this line
         ]);
     }
