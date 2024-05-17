@@ -84,9 +84,9 @@ public function handleCSVImport(Request $request)
     public function create()
     {
         $provinces = Province::all();
-        $categories = Category::all();
+        // $categories = Category::all();
 
-        return view('dashboard.posts.create', compact('provinces','categories'));
+        return view('dashboard.posts.create', compact('provinces'));
     }
 
     public function getkabupaten(request $request)
@@ -214,7 +214,7 @@ public function handleCSVImport(Request $request)
             'post' => $post,
             'provinces' => $provinces,
             'regencies' => $regencies, // Ensure that the variable is passed correctly
-            'categories' => Category::all(),
+            // 'categories' => Category::all(),
             // Add other data you may need for the edit view
         ]);
     }

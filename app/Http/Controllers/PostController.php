@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\User;
 use App\Models\Category;
 use App\Charts\WeatherChart;
+use GuzzleHttp\Client;
 
 use App\Models\Province;
 use App\Models\Regency;

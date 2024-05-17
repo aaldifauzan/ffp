@@ -62,8 +62,8 @@
             .then(response => response.json())
             .then(data => {
                 var address = data.address;
-                var province = address.state || address.city; // Check for province/state/region
-                var regency = address.city || address.town || address.county || address.village; // Check for city, town, or village for regency
+                var province = address.state || address.city;
+                var regency = address.city || address.town || address.county || address.village;
                 var popupContent = "<strong>Province: </strong>" + province + "<br>" +
                                    "<strong>Regency: </strong> " + regency + "<br>" +
                                    "<a href='https://www.google.com/maps?q=" + e.latlng.lat + "," + e.latlng.lng + "' target='_blank'>See on Google Maps</a>";
