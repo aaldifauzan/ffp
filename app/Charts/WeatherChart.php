@@ -6,64 +6,50 @@ use ArielMejiaDev\LarapexCharts\LarapexChart;
 
 class WeatherChart
 {
-    protected $windspeedChart;
-    protected $humidityChart;
-    protected $rainfallChart;
-    protected $temperatureChart; // Adding property for temperature chart
+    protected $chart;
 
-    public function __construct(LarapexChart $chart1, LarapexChart $chart2, LarapexChart $chart3, LarapexChart $chart4) // Adding parameter for temperature chart
+    public function __construct(LarapexChart $chart)
     {
-        $this->windspeedChart = $chart1;
-        $this->humidityChart = $chart2;
-        $this->rainfallChart = $chart3;
-        $this->temperatureChart = $chart4; // Initializing temperature chart property
+        $this->chart = $chart;
     }
 
-    public function buildWindspeedChart($data, $labels): \ArielMejiaDev\LarapexCharts\LineChart
+    public function buildWeatherChart($actualData, $predictData, $labels, $title): \ArielMejiaDev\LarapexCharts\LineChart
     {
-        $roundedData = array_map(function ($value) {
-            return round($value, 2); // Rounding to two decimal places
-        }, $data);
-        return $this->windspeedChart->lineChart()
-            ->setTitle('Windspeed')
-            ->setLabels($labels)
-            ->addData('Windspeed', $roundedData)
-            ->setStroke(2);
-    }
-    
-    public function buildHumidityChart($data, $labels): \ArielMejiaDev\LarapexCharts\LineChart
-    {
-        $roundedData = array_map(function ($value) {
-            return round($value, 2); // Rounding to two decimal places
-        }, $data);
-        return $this->humidityChart->lineChart()
-            ->setTitle('Humidity')
-            ->setLabels($labels)
-            ->addData('Humidity', $roundedData)
-            ->setStroke(2);
-    }
-    
-    public function buildRainfallChart($data, $labels): \ArielMejiaDev\LarapexCharts\LineChart
-    {
-        $roundedData = array_map(function ($value) {
-            return round($value, 2); // Rounding to two decimal places
-        }, $data);
-        return $this->rainfallChart->lineChart()
-            ->setTitle('Rainfall')
-            ->setLabels($labels)
-            ->addData('Rainfall', $roundedData)
-            ->setStroke(2);
-    }
-    
-    public function buildTemperatureChart($data, $labels): \ArielMejiaDev\LarapexCharts\LineChart
-    {
-        $roundedData = array_map(function ($value) {
-            return round($value, 4); // Rounding to two decimal places
-        }, $data);
-        return $this->temperatureChart->lineChart()
-            ->setTitle('Temperature')
-            ->setLabels($labels)
-            ->addData('Temperature', $roundedData)
+        // Round the data to one decimal place
+        $actualData = array_map(function ($value) {
+            return round($value, 1);
+        }, $actualData);
+
+        $predictData = array_map(function ($value) {
+            return round($value, 1);
+        }, $predictData);
+
+        // Format the date labels
+        $formattedLabels = array_map(function ($label) {
+            $date = new \DateTime($label);
+            return $date->format('d M Y'); // Format as 'dd Mmm yyyy'
+        }, $labels);
+
+        return $this->chart->lineChart()
+            ->setTitle($title)
+            ->setLabels($formattedLabels)
+            ->addData('Actual', $actualData)
+            ->addData('Predicted', $predictData)
+            ->setColors(['#FF4560', '#00E396'])
+            ->setDataset([
+                [
+                    'name' => 'Actual',
+                    'data' => $actualData,
+                    'type' => 'line',
+                    'color' => '#FF4560',
+                ],
+                [
+                    'name' => 'Predicted',
+                    'data' => $predictData,
+                    'type' => 'line',
+                    'color' => '#00E396',
+                ],
+            ])
             ->setStroke(2);
     }
 }

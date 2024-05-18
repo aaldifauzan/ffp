@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Category;
 use App\Charts\WeatherChart;
 use GuzzleHttp\Client;
+use App\Models\PostPredict;
 
 use App\Models\Province;
 use App\Models\Regency;
@@ -78,8 +79,8 @@ class PostController extends Controller
         $selectedKabupaten = $request->query('kabupaten');
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        
-        // Fetch data based on selected filters
+
+        // Fetch actual data
         $postsQuery = Post::query();
         if ($selectedProvinsi) {
             $postsQuery->where('provinsi', $selectedProvinsi);
@@ -87,50 +88,55 @@ class PostController extends Controller
         if ($selectedKabupaten) {
             $postsQuery->where('kabupaten', $selectedKabupaten);
         }
-        
-        // Limit data to the specified date range
         if ($startDate && $endDate) {
             $postsQuery->whereBetween('date', [$startDate, $endDate]);
         }
-
-        // Get posts data
         $posts = $postsQuery->get();
 
+        // Fetch predicted data
+        $postPredictsQuery = PostPredict::query();
+        if ($selectedProvinsi) {
+            $postPredictsQuery->where('provinsi', $selectedProvinsi);
+        }
+        if ($selectedKabupaten) {
+            $postPredictsQuery->where('kabupaten', $selectedKabupaten);
+        }
+        if ($startDate && $endDate) {
+            $postPredictsQuery->whereBetween('date', [$startDate, $endDate]);
+        }
+        $postPredicts = $postPredictsQuery->get();
+
         // If no data found, set error message in session
-        if ($posts->isEmpty()) {
+        if ($posts->isEmpty() || $postPredicts->isEmpty()) {
             return redirect()->back()->with('error', 'No data found matching the provided filters.');
         }
-        
-        // Extract data for windspeed chart
-        $windspeedChartData = $posts->pluck('windspeed')->toArray();
+
+        // Extract data for charts
         $chartLabels = $posts->pluck('date')->toArray();
 
-        // Extract data for humidity chart
-        $humidityChartData = $posts->pluck('humidity')->toArray();
+        // Actual data
+        $temperatureData = $posts->pluck('temperature')->toArray();
+        $humidityData = $posts->pluck('humidity')->toArray();
+        $rainfallData = $posts->pluck('rainfall')->toArray();
+        $windspeedData = $posts->pluck('windspeed')->toArray();
 
-        // Extract data for rainfall chart
-        $rainfallChartData = $posts->pluck('rainfall')->toArray();
-
-        // Extract data for temperature chart
-        $temperatureChartData = $posts->pluck('temperature')->toArray();
+        // Predicted data
+        $temperaturePredictData = $postPredicts->pluck('temperature_predict')->toArray();
+        $humidityPredictData = $postPredicts->pluck('humidity_predict')->toArray();
+        $rainfallPredictData = $postPredicts->pluck('rainfall_predict')->toArray();
+        $windspeedPredictData = $postPredicts->pluck('windspeed_predict')->toArray();
 
         // Build weather charts
-        $chart1 = $weatherChart->buildWindspeedChart($windspeedChartData, $chartLabels);
-        $chart2 = $weatherChart->buildHumidityChart($humidityChartData, $chartLabels);
-        $chart3 = $weatherChart->buildRainfallChart($rainfallChartData, $chartLabels);
-        $chart4 = $weatherChart->buildTemperatureChart($temperatureChartData, $chartLabels); // Build temperature chart
+        $temperatureChart = $weatherChart->buildWeatherChart($temperatureData, $temperaturePredictData, $chartLabels, 'Temperature');
+        $humidityChart = $weatherChart->buildWeatherChart($humidityData, $humidityPredictData, $chartLabels, 'Humidity');
+        $rainfallChart = $weatherChart->buildWeatherChart($rainfallData, $rainfallPredictData, $chartLabels, 'Rainfall');
+        $windspeedChart = $weatherChart->buildWeatherChart($windspeedData, $windspeedPredictData, $chartLabels, 'Windspeed');
 
-        // Define the title
         $title = 'History';
-
-        // Define the active page
         $active = 'history';
 
-        return view('history', compact('provinces', 'chart1', 'chart2', 'chart3', 'chart4', 'title', 'active', 'selectedProvinsi', 'startDate', 'endDate', 'selectedKabupaten'));
+        return view('history', compact('provinces', 'temperatureChart', 'humidityChart', 'rainfallChart', 'windspeedChart', 'title', 'active', 'selectedProvinsi', 'selectedKabupaten', 'startDate', 'endDate'));
     }
-    
-    
-    
     
 
 

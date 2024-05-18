@@ -56,35 +56,42 @@
                 <label for="end_date">Tanggal Akhir:</label>
                 <input type="date" class="form-control" id="end_date" name="end_date" value="{{ old('end_date') ?? $endDate }}">
             </div>
-            
         </div>
 
-        <button type="submit" class="btn btn-primary">Filter</button>
+        <button type="submit" class="btn btn-primary btn-block mb-4" style="width: 150px;">Submit</button>
     </form>
 
     @if(request()->hasAny(['provinsi', 'kabupaten', 'start_date', 'end_date']))
-            <div class="p-6 m-20 bg-white rounded shadow">
-                {!! $chart1->container() !!}
-            </div>
-        <script src="{{ $chart1->cdn() }}"></script>
-        {{ $chart1->script() }}
+        <div class="chart-container p-6 m-20 bg-white rounded shadow">
+            {!! $temperatureChart->container() !!}
+        </div>
+        <script src="{{ $temperatureChart->cdn() }}"></script>
+        {{ $temperatureChart->script() }}
 
-            <div class="p-6 m-20 bg-white rounded shadow">
-                {!! $chart2->container() !!}
-            </div>
-        <script src="{{ $chart2->cdn() }}"></script>
-        {{ $chart2->script() }}
+        <div class="chart-container p-6 m-20 bg-white rounded shadow mt-4">
+            {!! $humidityChart->container() !!}
+        </div>
+        <script src="{{ $humidityChart->cdn() }}"></script>
+        {{ $humidityChart->script() }}
 
-            <div class="p-6 m-20 bg-white rounded shadow">
-                {!! $chart3->container() !!}
-            </div>
-        <script src="{{ $chart3->cdn() }}"></script>
-        {{ $chart3->script() }}
+        <div class="chart-container p-6 m-20 bg-white rounded shadow mt-4">
+            {!! $rainfallChart->container() !!}
+        </div>
+        <script src="{{ $rainfallChart->cdn() }}"></script>
+        {{ $rainfallChart->script() }}
 
-            <div class="p-6 m-20 bg-white rounded shadow">
-                {!! $chart4->container() !!}
-            </div>
-        <script src="{{ $chart4->cdn() }}"></script>
-        {{ $chart4->script() }}
+        <div class="chart-container p-6 m-20 bg-white rounded shadow mt-4">
+            {!! $windspeedChart->container() !!}
+        </div>
+        <script src="{{ $windspeedChart->cdn() }}"></script>
+        {{ $windspeedChart->script() }}
     @endif
+@endsection
+
+@section('styles')
+<style>
+    .chart-container {
+        margin-bottom: 50px; /* Increase this value for more spacing */
+    }
+</style>
 @endsection
