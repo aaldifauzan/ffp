@@ -68,8 +68,13 @@ class PostController extends Controller
         // Define the active page
         $active = 'maps';
     
-        return view('maps', compact('provinces', 'title', 'active', 'selectedProvinsi', 'selectedKabupaten')); // Sertakan $selectedKabupaten di sini
+        // Set default values for start_date and end_date
+        $startDate = $request->query('start_date', now()->subMonth()->format('Y-m-d')); // Default to one month ago
+        $endDate = $request->query('end_date', now()->format('Y-m-d')); // Default to today
+    
+        return view('maps', compact('provinces', 'title', 'active', 'selectedProvinsi', 'selectedKabupaten', 'startDate', 'endDate')); // Sertakan $startDate dan $endDate di sini
     }
+    
 
 
     public function history(Request $request, WeatherChart $weatherChart)

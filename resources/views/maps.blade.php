@@ -5,10 +5,10 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="provinsi">Provinsi</label>
-                <select class="form-control @error('provinsi') is-invalid @enderror" id="provinsi" name="provinsi">
-                    <option value="" @if(!$selectedProvinsi) selected @endif>Semua Provinsi</option>
+                <select class="form-control @error('provinsi') is-invalid @enderror" id="provinsi" name="provinsi" required>
+                    <option value="" @if(old('provinsi') == '') selected @endif>-- Provinsi --</option>
                     @foreach ($provinces as $provinsi)
-                        <option value="{{ $provinsi->id }}" @if($selectedProvinsi == $provinsi->id) selected @endif>
+                        <option value="{{ $provinsi->id }}" @if(old('provinsi') == $provinsi->id || $selectedProvinsi == $provinsi->id) selected @endif>
                             {{ $provinsi->name }}
                         </option>
                     @endforeach
@@ -24,7 +24,7 @@
                 <select class="form-control @error('kabupaten') is-invalid @enderror" id="kabupaten" name="kabupaten">
                     <option value="" @if(!$selectedKabupaten) selected @endif>-- Kabupaten/Kota --</option>
                     @if($selectedProvinsi)
-                        @foreach ($provinces->find($selectedProvinsi)->regencies ?? [] as $kabupaten)
+                        @foreach ($provinces->find($selectedProvinsi)->regencies as $kabupaten)
                             <option value="{{ $kabupaten->id }}" @if($selectedKabupaten == $kabupaten->id) selected @endif>
                                 {{ $kabupaten->name }}
                             </option>
@@ -37,10 +37,44 @@
                     </div>
                 @enderror
             </div>
-            
         </div>
-        <button type="submit" class="btn btn-primary">Filter</button>
-        <button id="queryButton" class="btn btn-primary mt-3">Query</button>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="start_date">Tanggal Awal:</label>
+                <input type="date" class="form-control" id="start_date" name="start_date" value="{{ old('start_date') ?? $startDate }}">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="end_date">Tanggal Akhir:</label>
+                <input type="date" class="form-control" id="end_date" name="end_date" value="{{ old('end_date') ?? $endDate }}">
+            </div>
+        </div>
+        
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="predict-tab" data-toggle="tab" href="#predict" role="tab" aria-controls="predict" aria-selected="true">Predict</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="forecast-tab" data-toggle="tab" href="#forecast" role="tab" aria-controls="forecast" aria-selected="false">Forecast</a>
+            </li>
+        </ul>
+        
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="predict" role="tabpanel" aria-labelledby="predict-tab">
+                <div class="form-row mb-3 mt-3">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-primary btn-block">Predict</button>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="forecast" role="tabpanel" aria-labelledby="forecast-tab">
+                <div class="form-row mb-3 mt-3">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-primary btn-block">Forecast</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
 
     <div id="map"></div>
@@ -132,10 +166,4 @@
             });
     }
 </script>
-
-
-
-
-
-
 @endsection
