@@ -17,20 +17,13 @@
         </div>
     @endif
 
-    <div class="mb-3">
-        <div class="d-flex justify-content-between">
-            <div class="d-flex">
-                <a href="/dashboard/posts/create" class="btn btn-primary me-2">Input Data Harian</a>
-                <a href="{{ route('dashboard.posts.importcsv') }}" class="btn btn-success me-2">Import CSV</a>
-            </div>
-            <form action="{{ route('dashboard.posts.show', ['province_id' => $province->id, 'regency_id' => $regency->id]) }}" method="GET" class="d-flex w-25">
-                <select name="year" id="year" class="form-select me-1">
-                    @foreach(range(date("Y"), 2018, -1) as $year)
-                        <option value="{{ $year }}" {{ $year == $selectedYear ? 'selected' : '' }}>{{ $year }}</option>
-                    @endforeach
-                </select>
-                <button type="submit" class="btn btn-primary">Filter</button>
-            </form>
+    <div class="mb-3 d-flex justify-content-between align-items-center">
+        <div>
+            <a href="/dashboard/posts/create" class="btn btn-primary me-2">Input Data Harian</a>
+            <a href="{{ route('dashboard.posts.importcsv') }}" class="btn btn-success me-2">Import CSV</a>
+        </div>
+        <div>
+            {{ $posts1->links() }}
         </div>
     </div>
 
@@ -57,7 +50,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($posts1->sortByDesc('date') as $post1)
+                @foreach ($posts1 as $post1)
                     @php
                         // Cari data PostPredict yang sesuai dengan tanggal, provinsi, dan kabupaten dari Post
                         $postPredict = $posts2->where('date', $post1->date)
@@ -77,15 +70,15 @@
                         <td>{{ $postPredict ? $postPredict->temperature_predict : '-' }}</td>
                         <td>{{ $post1->humidity }}</td>
                         <td>{{ $postPredict ? $postPredict->humidity_predict : '-' }}</td>
-                        <td>{{ $post1->rainfall }}</td>
+                        <td>{{ round($post1->rainfall, 1) }}</td>
                         <td>{{ $postPredict ? $postPredict->rainfall_predict : '-' }}</td>
                         <td>{{ $post1->windspeed }}</td>
-                        <td>{{ $fwi ? $fwi->ffmc : '-' }}</td>
-                        <td>{{ $fwi ? $fwi->dmc : '-' }}</td>
-                        <td>{{ $fwi ? $fwi->dc : '-' }}</td>
-                        <td>{{ $fwi ? $fwi->isi : '-' }}</td>
-                        <td>{{ $fwi ? $fwi->bui : '-' }}</td>
-                        <td>{{ $fwi ? $fwi->fwi : '-' }}</td>
+                        <td>{{ $fwi ? number_format($fwi->ffmc, 1) : '-' }}</td>
+                        <td>{{ $fwi ? number_format($fwi->dmc, 1) : '-' }}</td>
+                        <td>{{ $fwi ? number_format($fwi->dc, 1) : '-' }}</td>
+                        <td>{{ $fwi ? number_format($fwi->isi, 1) : '-' }}</td>
+                        <td>{{ $fwi ? number_format($fwi->bui, 1) : '-' }}</td>
+                        <td>{{ $fwi ? number_format($fwi->fwi, 1) : '-' }}</td>
                         <td>
                             <a href="{{ route('dashboard.posts.edit', ['province_id' => $province->id, 'regency_id' => $regency->id, 'post_id' => $post1->id]) }}" class="badge bg-warning">
                                 <span data-feather="edit"></span>

@@ -151,19 +151,10 @@ public function handleCSVImport(Request $request)
         $postsQuery2 = PostPredict::where('provinsi', $provinceId)->where('kabupaten', $regencyId);
         $postsQuery3 = Fwi::where('provinsi', $provinceId)->where('kabupaten', $regencyId);
     
-        // Get the selected year from the request or use the current year as default
-        $selectedYear = request('year', date('Y'));
-    
-        if ($selectedYear) {
-            $postsQuery1->whereYear('date', '=', $selectedYear);
-            $postsQuery2->whereYear('date', '=', $selectedYear);
-            $postsQuery3->whereYear('date', '=', $selectedYear);
-        }
-    
         // Get the filtered posts
-        $posts1 = $postsQuery1->get();
-        $posts2 = $postsQuery2->get();
-        $posts3 = $postsQuery3->get();
+        $posts1 = $postsQuery1->paginate(50); // Adjust the number per page as needed
+        $posts2 = $postsQuery2->paginate(50);
+        $posts3 = $postsQuery3->paginate(50);
     
         // Check if there are any posts
         if ($posts1->isEmpty()) {
@@ -177,7 +168,6 @@ public function handleCSVImport(Request $request)
             'posts1' => $posts1,
             'posts2' => $posts2,
             'posts3' => $posts3,
-            'selectedYear' => $selectedYear, // Add this line
         ]);
     }
 
