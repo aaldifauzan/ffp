@@ -147,7 +147,7 @@ public function handleCSVImport(Request $request)
         }
     
         // Fetch all posts based on the province and regency
-        $postsQuery1 = Post::where('provinsi', $provinceId)->where('kabupaten', $regencyId);
+        $postsQuery1 = Post::where('provinsi', $provinceId)->where('kabupaten', $regencyId)->orderBy('date', 'asc');
         $postsQuery2 = PostPredict::where('provinsi', $provinceId)->where('kabupaten', $regencyId);
         $postsQuery3 = Fwi::where('provinsi', $provinceId)->where('kabupaten', $regencyId);
     
