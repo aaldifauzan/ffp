@@ -5,23 +5,22 @@
     <h1 class="h2">Input Data Parameter</h1>
 </div>
 
-
-<div class=""">
-    <form method="post" action="/dashboard/posts" class="mb-5" enctype="multipart/form-data">
+<div class="">
+    <form id="postForm" method="post" action="/dashboard/posts" class="mb-5" enctype="multipart/form-data">
         @csrf
         <div class="mb-3 row">
             <div class="">
                 <label for="date" class="form-label">Date</label>
-                <div class="input-group date" id="datepicker">
-                    <input type="text" class="form-control @error('date') is-invalid @enderror" placeholder="dd-mm-yyyy" id="date" name='date' required autofocus value="{{ old('date') }}" readonly>
+                <div class="input-group date">
+                    <input type="text" class="form-control @error('date') is-invalid @enderror" id="date" name="date" required autofocus value="{{ old('date') }}" placeholder="dd-mm-yyyy">
                     @error('date')
                     <div class="invalid-feedback">
                         {{ $message }}
                     </div>
                     @enderror
-                    <span class="input-group-append">
-                    </span>
                 </div>
+                <!-- Hidden input to store the date in Y-m-d format -->
+                <input type="hidden" id="formatted_date" name="formatted_date">
             </div>
 
             <div class="form-group">
@@ -44,36 +43,13 @@
             <div class="form-group">
                 <label for="exampleFormControlSelect2">Kabupaten/Kota</label>
                 <select class="form-control @error('kabupaten') is-invalid @enderror" id="kabupaten" name="kabupaten">
-
                 </select>
             </div>
-
-            {{-- <div class="col-md-6">
-                <label for="category" class="form-label">Province</label>
-                <select class="form-select" name="category_id">
-                    @foreach ($categories as $category)
-                        @if(old('category_id') == $category->id)
-                            <option value="{{ $category->id }}" selected>{{ $category->name }}</option>
-                        @else
-                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                        @endif
-                    @endforeach
-                </select>
-            </div> --}}
         </div>
-        {{-- <div class="mb-3">
-            <label for="title" class="form-label">Title</label>
-            <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name='title' required autofocus value="{{ old('title') }}">
-            @error('title')
-            <div class="invalid-feedback">
-                {{ $message }}
-            </div>
-            @enderror
-        </div> --}}
 
         <div class="mb-3">
             <label for="temperature" class="form-label">Temperature</label>
-            <input type="text" class="form-control @error('temperature') is-invalid @enderror" id="temperature" name='temperature' required autofocus value="{{ old('temperature') }}">
+            <input type="text" class="form-control @error('temperature') is-invalid @enderror" id="temperature" name="temperature" required autofocus value="{{ old('temperature') }}">
             @error('temperature')
             <div class="invalid-feedback">
                 {{ $message }}
@@ -82,7 +58,7 @@
         </div>
         <div class="mb-3">
             <label for="rainfall" class="form-label">Rainfall</label>
-            <input type="text" class="form-control @error('rainfall') is-invalid @enderror" id="rainfall" name='rainfall' required autofocus value="{{ old('rainfall') }}">
+            <input type="text" class="form-control @error('rainfall') is-invalid @enderror" id="rainfall" name="rainfall" required autofocus value="{{ old('rainfall') }}">
             @error('rainfall')
             <div class="invalid-feedback">
                 {{ $message }}
@@ -91,7 +67,7 @@
         </div>
         <div class="mb-3">
             <label for="humidity" class="form-label">Humidity</label>
-            <input type="text" class="form-control @error('humidity') is-invalid @enderror" id="humidity" name='humidity' required autofocus value="{{ old('humidity') }}">
+            <input type="text" class="form-control @error('humidity') is-invalid @enderror" id="humidity" name="humidity" required autofocus value="{{ old('humidity') }}">
             @error('humidity')
             <div class="invalid-feedback">
                 {{ $message }}
@@ -100,7 +76,7 @@
         </div>
         <div class="mb-3">
             <label for="windspeed" class="form-label">Windspeed</label>
-            <input type="text" class="form-control @error('windspeed') is-invalid @enderror" id="windspeed" name='windspeed' required autofocus value="{{ old('windspeed') }}">
+            <input type="text" class="form-control @error('windspeed') is-invalid @enderror" id="windspeed" name="windspeed" required autofocus value="{{ old('windspeed') }}">
             @error('windspeed')
             <div class="invalid-feedback">
                 {{ $message }}
@@ -108,73 +84,23 @@
             @enderror
         </div>
 
-        
-        {{-- <div class="mb-3">
-            <label for="slug" class="form-label">Slug</label>
-            <input type="text" class="form-control @error('slug') is-invalid @enderror" id="slug" name='slug' required value="{{ old('slug') }}">
-            @error('slug')
-            <div class="invalid-feedback">
-                {{ $message }}
-            </div>
-            @enderror
-        </div> --}}
-        {{-- <div class="mb-3">
-            <label for="imagr" class="form-label">Post Image</label>
-            <input class="form-control @error('image') is-invalid @enderror" type="file" id="image" name="image">
-            @error('image')
-            <div class="invalid-feedback">
-                {{ $message }}
-            </div>
-            @enderror
-          </div>
-        <div class="mb-3">
-            <label for="body" class="form-label">Body</label>
-                @error('body')
-                    <p class="text-danger">{{ $message }}</p>
-                @enderror
-                <input id="body" type="hidden" name="body" value="{{ old('body') }}">
-                <trix-editor input="body"></trix-editor>            
-        </div> --}}
         <button type="submit" class="btn btn-primary">Create Data</button>
     </form>
 </div>
 
-{{-- <script>
-    const title = document.querySelector("#title");
-    const slug = document.querySelector("#slug");
-
-    title.addEventListener("keyup", function() {
-        let preslug = title.value;
-        preslug = preslug.replace(/ /g,"-");
-        slug.value = preslug.toLowerCase();
-    });
-
-    document.addEventListener('trix-file-accept', function(e){
-        e.preventDefault()
-    })
-</script> --}}
-
-<script type="text/javascript">
-    $(function() {
-        $('#datepicker').datepicker({
-            format: 'dd-mm-yyyy',
-        });
-    });
-</script>
-
 <script>
-    // Add an event listener to the form to validate province selection
     document.getElementById('postForm').addEventListener('submit', function (event) {
-        const provinsi = document.getElementById('provinsi');
-        
-        if (provinsi.value === '') {
-            // Prevent form submission if province is not selected
-            event.preventDefault();
-            // Show the error message
-            provinsi.classList.add('is-invalid');
+        const dateInput = document.getElementById('date');
+        const dateValue = dateInput.value;
+
+        if (dateValue) {
+            const dateParts = dateValue.split('-');
+            if (dateParts.length === 3) {
+                const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+                document.getElementById('formatted_date').value = formattedDate;
+            }
         }
     });
 </script>
-
 
 @endsection

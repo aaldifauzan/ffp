@@ -110,15 +110,7 @@ public function handleCSVImport(Request $request)
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'date' => [
-                'required',
-                'date_format:d-m-Y',
-                Rule::unique('posts')->where(function ($query) use ($request) {
-                    return $query->where('date', date('Y-m-d', strtotime($request->date)))
-                                 ->where('provinsi', $request->provinsi)
-                                 ->where('kabupaten', $request->kabupaten);
-                }),
-            ],
+            'date' => 'required|date_format:d-m-Y',
             'provinsi' => 'required',
             'kabupaten' => 'required',
             'temperature' => 'required',
@@ -128,11 +120,14 @@ public function handleCSVImport(Request $request)
         ]);
     
         $validatedData['user_id'] = auth()->user()->id;
+        // Use the hidden input for the date formatted correctly for the database
+        $validatedData['date'] = date('Y-m-d', strtotime($request->formatted_date));
     
         Post::create($validatedData);
     
         return redirect('/dashboard/posts')->with('success', 'New post has been added!');
     }
+    
 
     /**
      * Display the specified resource.
@@ -147,7 +142,7 @@ public function handleCSVImport(Request $request)
         }
     
         // Fetch all posts based on the province and regency
-        $postsQuery1 = Post::where('provinsi', $provinceId)->where('kabupaten', $regencyId)->orderBy('date', 'asc');
+        $postsQuery1 = Post::where('provinsi', $provinceId)->where('kabupaten', $regencyId)->orderBy('date', 'desc');
         $postsQuery2 = PostPredict::where('provinsi', $provinceId)->where('kabupaten', $regencyId);
         $postsQuery3 = Fwi::where('provinsi', $provinceId)->where('kabupaten', $regencyId);
     
