@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+<div class="container mt-4">
     <h1>Halaman History</h1>
 
     @if(session()->has('error'))
@@ -86,6 +87,7 @@
         <script src="{{ $windspeedChart->cdn() }}"></script>
         {{ $windspeedChart->script() }}
     @endif
+</div>
 @endsection
 
 @section('styles')

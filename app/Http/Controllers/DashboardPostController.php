@@ -142,14 +142,18 @@ public function handleCSVImport(Request $request)
         }
     
         // Fetch all posts based on the province and regency
-        $postsQuery1 = Post::where('provinsi', $provinceId)->where('kabupaten', $regencyId)->orderBy('date', 'desc');
-        $postsQuery2 = PostPredict::where('provinsi', $provinceId)->where('kabupaten', $regencyId);
-        $postsQuery3 = Fwi::where('provinsi', $provinceId)->where('kabupaten', $regencyId);
+        $postsQuery1 = Post::where('provinsi', $provinceId)
+                            ->where('kabupaten', $regencyId)
+                            ->orderBy('date', 'desc');
+        $postsQuery2 = PostPredict::where('provinsi', $provinceId)
+                                  ->where('kabupaten', $regencyId);
+        $postsQuery3 = Fwi::where('provinsi', $provinceId)
+                          ->where('kabupaten', $regencyId);
     
         // Get the filtered posts
         $posts1 = $postsQuery1->paginate(50); // Adjust the number per page as needed
-        $posts2 = $postsQuery2->paginate(50);
-        $posts3 = $postsQuery3->paginate(50);
+        $posts2 = $postsQuery2->get(); // Use get() instead of paginate() to get all predictions
+        $posts3 = $postsQuery3->get(); // Use get() instead of paginate() to get all FWI data
     
         // Check if there are any posts
         if ($posts1->isEmpty()) {
@@ -165,6 +169,7 @@ public function handleCSVImport(Request $request)
             'posts3' => $posts3,
         ]);
     }
+    
 
     /**
      * Show the form for editing the specified resource.

@@ -51,49 +51,50 @@
             </thead>
             <tbody>
                 @foreach ($posts1 as $post1)
-                    @php
-                        // Cari data PostPredict yang sesuai dengan tanggal, provinsi, dan kabupaten dari Post
-                        $postPredict = $posts2->where('date', $post1->date)
-                                              ->where('provinsi', $post1->provinsi)
-                                              ->where('kabupaten', $post1->kabupaten)
-                                              ->first();
-                        // Cari data Fwi yang sesuai dengan tanggal, provinsi, dan kabupaten dari Post
-                        $fwi = $posts3->where('date', $post1->date)
-                                      ->where('provinsi', $post1->provinsi)
-                                      ->where('kabupaten', $post1->kabupaten)
-                                      ->first();
-                    @endphp
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $post1->date }}</td>
-                        <td>{{ $post1->temperature }}</td>
-                        <td>{{ $postPredict ? $postPredict->temperature_predict : '-' }}</td>
-                        <td>{{ $post1->humidity }}</td>
-                        <td>{{ $postPredict ? $postPredict->humidity_predict : '-' }}</td>
-                        <td>{{ round($post1->rainfall, 1) }}</td>
-                        <td>{{ $postPredict ? $postPredict->rainfall_predict : '-' }}</td>
-                        <td>{{ $post1->windspeed }}</td>
-                        <td>{{ $fwi ? number_format($fwi->ffmc, 1) : '-' }}</td>
-                        <td>{{ $fwi ? number_format($fwi->dmc, 1) : '-' }}</td>
-                        <td>{{ $fwi ? number_format($fwi->dc, 1) : '-' }}</td>
-                        <td>{{ $fwi ? number_format($fwi->isi, 1) : '-' }}</td>
-                        <td>{{ $fwi ? number_format($fwi->bui, 1) : '-' }}</td>
-                        <td>{{ $fwi ? number_format($fwi->fwi, 1) : '-' }}</td>
-                        <td>
-                            <a href="{{ route('dashboard.posts.edit', ['province_id' => $province->id, 'regency_id' => $regency->id, 'post_id' => $post1->id]) }}" class="badge bg-warning">
-                                <span data-feather="edit"></span>
-                            </a>
-                            
-                            <form action="{{ route('dashboard.posts.destroy', ['post' => $post1->id]) }}" method="POST" class="d-inline">
-                                @method('delete')
-                                @csrf
-                                <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')">
-                                    <span data-feather="x-circle"></span>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
+                @php
+                    // Cari data PostPredict yang sesuai dengan tanggal, provinsi, dan kabupaten dari Post
+                    $postPredict = $posts2->where('date', $post1->date)
+                                          ->where('provinsi', $post1->provinsi)
+                                          ->where('kabupaten', $post1->kabupaten)
+                                          ->first();
+                    // Cari data Fwi yang sesuai dengan tanggal, provinsi, dan kabupaten dari Post
+                    $fwi = $posts3->where('date', $post1->date)
+                                  ->where('provinsi', $post1->provinsi)
+                                  ->where('kabupaten', $post1->kabupaten)
+                                  ->first();
+                @endphp
+                <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $post1->date }}</td>
+                    <td>{{ $post1->temperature }}</td>
+                    <td>{{ $postPredict ? round($postPredict->temperature_predict, 1) : '-' }}</td>
+                    <td>{{ $post1->humidity }}</td>
+                    <td>{{ $postPredict ? round($postPredict->humidity_predict, 1) : '-' }}</td>
+                    <td>{{ round($post1->rainfall, 1) }}</td>
+                    <td>{{ $postPredict ? round($postPredict->rainfall_predict, 1) : '-' }}</td>
+                    <td>{{ $post1->windspeed }}</td>
+                    <td>{{ $fwi ? number_format($fwi->ffmc, 1) : '-' }}</td>
+                    <td>{{ $fwi ? number_format($fwi->dmc, 1) : '-' }}</td>
+                    <td>{{ $fwi ? number_format($fwi->dc, 1) : '-' }}</td>
+                    <td>{{ $fwi ? number_format($fwi->isi, 3) : '-' }}</td>
+                    <td>{{ $fwi ? number_format($fwi->bui, 1) : '-' }}</td>
+                    <td>{{ $fwi ? number_format($fwi->fwi, 5) : '-' }}</td>
+                    <td>
+                        <a href="{{ route('dashboard.posts.edit', ['province_id' => $province->id, 'regency_id' => $regency->id, 'post_id' => $post1->id]) }}" class="badge bg-warning">
+                            <span data-feather="edit"></span>
+                        </a>
+                        
+                        <form action="{{ route('dashboard.posts.destroy', ['post' => $post1->id]) }}" method="POST" class="d-inline">
+                            @method('delete')
+                            @csrf
+                            <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')">
+                                <span data-feather="x-circle"></span>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            @endforeach
+            
             </tbody>
         </table>
     </div>

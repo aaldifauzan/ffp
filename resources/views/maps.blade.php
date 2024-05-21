@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+<div class="container mt-4">
     <form action="{{ route('maps') }}" method="GET">
         <div class="form-row">
             <div class="form-group col-md-6">
@@ -78,7 +79,7 @@
     </form>
 
     <div id="map"></div>
-
+</div>
     <style>
         #map { height: 500px; }
     </style>
