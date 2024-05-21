@@ -1,6 +1,6 @@
 FROM php:8.3-fpm
 
-# set your user name, ex: user=carlos
+# Set your user name, e.g., user=carlos
 ARG user=yourusername
 ARG uid=1000
 
@@ -29,15 +29,25 @@ RUN useradd -G www-data,root -u $uid -d /home/$user $user
 RUN mkdir -p /home/$user/.composer && \
     chown -R $user:$user /home/$user
 
-# Install redis
-RUN pecl install -o -f redis \
-    &&  rm -rf /tmp/pear \
-    &&  docker-php-ext-enable redis
+# Install redis (specify stable version)
+RUN pecl install -o -f redis-5.3.7 \
+    && rm -rf /tmp/pear \
+    && docker-php-ext-enable redis
 
 # Set working directory
-WORKDIR /var/www
+WORKDIR /app
 
-# Copy custom configurations PHP
+# Copy the Laravel application files to the container
+COPY . /app
+
+# Set ownership and permissions for Laravel
+RUN chown -R $user:www-data /app/storage /app/bootstrap/cache
+
+# Copy custom PHP configurations
 COPY docker/php/custom.ini /usr/local/etc/php/conf.d/custom.ini
 
 USER $user
+
+EXPOSE 80
+
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=80"]
