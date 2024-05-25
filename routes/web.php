@@ -18,9 +18,6 @@ use App\Http\Controllers\DashboardPostController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-if (App::environment('production')) {  
-    URL::forceScheme('https');  
-}  
 
 Route::get('/', [PostController::class, 'home'])->name('home');
 Route::get('/maps', [PostController::class, 'maps'])->name('maps');
