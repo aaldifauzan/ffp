@@ -2,7 +2,6 @@
 
 @section('container')
 <div class="container mt-4">
-    <h1>Halaman History</h1>
 
     @if(session()->has('error'))
         <div class="alert alert-danger" role="alert">

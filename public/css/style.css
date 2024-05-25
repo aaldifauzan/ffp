@@ -41,9 +41,14 @@ body {
   transform: translate(-50%, -50%);
   text-align: center;
   color: #fff;
-  background: rgba(0, 0, 0, 0.5);
   padding: 20px;
   border-radius: 10px;
+  background: none; /* Removed background color */
+}
+
+.home-title {
+  font-size: 2rem;
+  margin-bottom: 20px;
 }
 
 .home-text {
