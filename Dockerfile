@@ -50,4 +50,4 @@ USER $user
 
 EXPOSE 80
 
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=80"]
+CMD ["php", "artisan", "serve", "--host=127.0.0.2", "--port=80"]

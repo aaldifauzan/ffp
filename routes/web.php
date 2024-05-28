@@ -20,7 +20,11 @@ use App\Http\Controllers\DashboardPostController;
 */
 
 Route::get('/', [PostController::class, 'home'])->name('home');
+
 Route::get('/maps', [PostController::class, 'maps'])->name('maps');
+Route::post('/api/fwi-data-range', [PostController::class, 'getFWIDataRange'])->name('fwi-data-range');
+Route::post('/api/fwi-data-current', [PostController::class, 'getFWIDataCurrent'])->name('fwi-data-current');
+
 
 
 Route::get('/history', [PostController::class, 'history'])->name('history');
