@@ -7,7 +7,7 @@
             <div class="form-group col-md-6">
                 <label for="provinsi">Provinsi</label>
                 <select class="form-control @error('provinsi') is-invalid @enderror" id="provinsi" name="provinsi" required>
-                    <option value="" @if(old('provinsi') == '') selected @endif>-- Provinsi --</option>
+                    <option value="" @if(old('provinsi') == '' || !$selectedProvinsi) selected @endif>-- Provinsi --</option>
                     @foreach ($provinces as $provinsi)
                         <option value="{{ $provinsi->id }}" @if(old('provinsi') == $provinsi->id || $selectedProvinsi == $provinsi->id) selected @endif>
                             {{ $provinsi->name }}
@@ -142,16 +142,33 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add event listeners for dropdown changes
     document.getElementById('provinsi').addEventListener('change', function() {
         saveCurrentColorMapping();
-        zoomToSelectedArea('provinsi', this.value);
+        if (this.value) {
+            zoomToSelectedArea('provinsi', this.value);
+        } else {
+            loadAllData();
+        }
     });
 
     document.getElementById('kabupaten').addEventListener('change', function() {
         saveCurrentColorMapping();
-        zoomToSelectedArea('kabupaten', this.options[this.selectedIndex].text);
+        if (this.value) {
+            zoomToSelectedArea('kabupaten', this.options[this.selectedIndex].text);
+        } else {
+            var selectedProvinsi = document.getElementById('provinsi').value;
+            if (selectedProvinsi) {
+                zoomToSelectedArea('provinsi', selectedProvinsi);
+            } else {
+                loadAllData();
+            }
+        }
     });
 });
 
 function loadMapData() {
+    loadAllData();
+}
+
+function loadAllData() {
     var geojsonPath = "/geojson/alldata.geojson";
 
     fetch(geojsonPath)
@@ -240,6 +257,16 @@ function zoomToSelectedArea(type, id) {
         filteredData = geojsonData.features.filter(function(feature) {
             return feature.properties.alt_name.toLowerCase() === id.toLowerCase();
         });
+
+        // Check if no Kabupaten is selected (id is empty) and zoom back to province
+        if (filteredData.length === 0) {
+            var selectedProvinsi = document.getElementById('provinsi').value;
+            if (selectedProvinsi) {
+                filteredData = geojsonData.features.filter(function(feature) {
+                    return feature.properties.prov_id === selectedProvinsi;
+                });
+            }
+        }
     }
 
     if (geojsonLayer) {
