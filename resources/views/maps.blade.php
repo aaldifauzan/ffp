@@ -40,7 +40,7 @@
             </div>
         </div>
 
-        <div class="form-row">
+        {{-- <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="start_date">Tanggal Awal:</label>
                 <input type="date" class="form-control" id="start_date" name="start_date" value="{{ old('start_date') ?? now()->format('Y-m-d') }}">
@@ -49,7 +49,7 @@
                 <label for="end_date">Tanggal Akhir:</label>
                 <input type="date" class="form-control" id="end_date" name="end_date" value="{{ old('end_date') ?? now()->addDays(7)->format('Y-m-d') }}" min="{{ now()->format('Y-m-d') }}" max="{{ now()->addDays(30)->format('Y-m-d') }}">
             </div>
-        </div>
+        </div> --}}
         
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
