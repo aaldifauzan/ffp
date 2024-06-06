@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\File;
 use App\Models\Province;
 use App\Models\Regency;
+use Illuminate\Pagination\LengthAwarePaginator;
+
 
 class DashboardPostController extends Controller
 {
@@ -54,7 +56,6 @@ public function importCSV()
 {
     $provinces = Province::all();
 
-    // Pass the $provinces variable to the view
     return view('dashboard.posts.importcsv', compact('provinces'));
 }
 public function handleCSVImport(Request $request)
@@ -65,17 +66,12 @@ public function handleCSVImport(Request $request)
         'csv_file' => 'required|file|mimes:csv,txt',
     ]);
 
-    // Get the uploaded file
     $file = $request->file('csv_file');
 
-    // Provide an explicit type for the Excel import
     $type = 'csv';
 
-    // Use the import method with the provided type
     Excel::import(new ProvinceImport(), $file, $type);
 
-    // You can add your CSV processing logic here based on the uploaded file
-    // For demonstration purposes, I'm just returning a success message
     return redirect()->route('dashboard.posts.index')->with('success', 'CSV file has been imported successfully.');
 }
 
@@ -135,6 +131,8 @@ public function handleCSVImport(Request $request)
     /**
      * Display the specified resource.
      */
+
+
     public function show($provinceId, $regencyId)
     {
         $province = Province::find($provinceId);
@@ -145,25 +143,36 @@ public function handleCSVImport(Request $request)
         }
     
         $postsQuery1 = Post::where('provinsi', $provinceId)->where('kabupaten', $regencyId)->orderBy('date', 'desc');
-        $postsQuery2 = PostPredict::where('provinsi', $provinceId)->where('kabupaten', $regencyId);
+        $postsQuery2 = PostPredict::where('provinsi', $provinceId)->where('kabupaten', $regencyId)->orderBy('date', 'desc');
         $postsQuery3 = Fwi::where('provinsi', $provinceId)->where('kabupaten', $regencyId);
     
-        $posts1 = $postsQuery1->paginate(50);
+        $posts1 = $postsQuery1->get();
         $posts2 = $postsQuery2->get();
         $posts3 = $postsQuery3->get();
     
-        if ($posts1->isEmpty()) {
+        // Merge actual and predicted posts, removing duplicates
+        $combinedPosts = $posts1->merge($posts2)->unique('date')->sortByDesc('date');
+    
+        // Paginate the combined result
+        $perPage = 50;
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $currentItems = $combinedPosts->slice(($currentPage - 1) * $perPage, $perPage)->all();
+        $paginatedCombinedPosts = new LengthAwarePaginator($currentItems, $combinedPosts->count(), $perPage);
+        $paginatedCombinedPosts->setPath(route('dashboard.posts.show', ['province' => $provinceId, 'regency' => $regencyId]));
+    
+        if ($paginatedCombinedPosts->isEmpty()) {
             return redirect()->back()->with('error', 'No data found for the specified province, regency, and year.');
         }
     
         return view('dashboard.posts.show', [
             'province' => $province,
             'regency' => $regency,
-            'posts1' => $posts1,
+            'posts1' => $paginatedCombinedPosts,
             'posts2' => $posts2,
             'posts3' => $posts3,
         ]);
     }
+    
     
 
 
@@ -219,7 +228,7 @@ public function handleCSVImport(Request $request)
         \Log::info('Forecasting with Province ID: ' . $provinceId . ' and Regency ID: ' . $regencyId);
     
         // Define the endpoint for the API request
-        $endpoint = 'http://127.0.0.1:5000/forecast';
+        $endpoint = 'http://127.0.0.1:8888/forecast';
     
         try {
             // Make the API request to Flask with increased timeout
@@ -248,6 +257,47 @@ public function handleCSVImport(Request $request)
             // Log the exception message
             \Log::error('Forecast failed: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Forecast failed: ' . $e->getMessage());
+        }
+    }
+
+
+    public function fwi(Request $request)
+    {
+        $provinceId = $request->input('provinsi');
+        $regencyId = $request->input('kabupaten');
+    
+        \Log::info('FWI with Province ID: ' . $provinceId . ' and Regency ID: ' . $regencyId);
+    
+        // Define the endpoint for the API request
+        $endpoint = 'http://127.0.0.1:5000/fwi';
+    
+        try {
+            // Make the API request to Flask with increased timeout
+            $response = Http::timeout(120)->post($endpoint, [
+                'selectedProvinsi' => $provinceId,
+                'selectedKabupaten' => $regencyId,
+            ]);
+    
+            // Check if the response is successful
+            if ($response->successful()) {
+                $predictionData = $response->json();
+    
+                // Handle the prediction data as needed
+                foreach ($predictionData as $date => $data) {
+                    // Process the data, for example, store it in the database or display it in the view
+                }
+    
+                return redirect()->back()->with('success', 'FWI completed successfully.');
+            } else {
+                // Log the error message from the response
+                $errorMessage = $response->json()['error'] ?? 'Unknown error';
+                \Log::error('Forecast failed: ' . $errorMessage);
+                return redirect()->back()->with('error', 'FWI failed: ' . $errorMessage);
+            }
+        } catch (\Exception $e) {
+            // Log the exception message
+            \Log::error('Forecast failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'FWI failed: ' . $e->getMessage());
         }
     }
     

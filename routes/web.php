@@ -30,11 +30,6 @@ Route::post('/api/fwi-data-current', [PostController::class, 'getFWIDataCurrent'
 Route::get('/history', [PostController::class, 'history'])->name('history');
 Route::post('/getkota', [PostController::class, 'getkota'])->name('getkota');
 
-// halaman single post
-Route::get('/posts/{post:slug}',[PostController::class, 'show']);
-
-
-
 
 Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');
 Route::post('/login', [LoginController::class, 'authenticate']);
@@ -85,3 +80,8 @@ Route::delete('/dashboard/posts/{post}', [DashboardPostController::class, 'destr
     Route::post('/train', [DashboardPostController::class, 'train'])->name('train');
 
     Route::post('/forecast', [DashboardPostController::class, 'forecast'])->name('forecast');
+
+    Route::post('/fwi', [DashboardPostController::class, 'fwi'])->name('fwi');
+
+
+    Route::get('/dashboard/posts/{province}/{regency}', [DashboardPostController::class, 'show'])->name('dashboard.posts.show');

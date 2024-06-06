@@ -34,6 +34,12 @@
             <input type="hidden" name="kabupaten" value="{{ $regency->id }}">
             <button type="submit" class="btn btn-warning">Forecast</button>
         </form>
+        <form action="{{ route('fwi') }}" method="POST" class="d-inline">
+            @csrf
+            <input type="hidden" name="provinsi" value="{{ $province->id }}">
+            <input type="hidden" name="kabupaten" value="{{ $regency->id }}">
+            <button type="submit" class="btn btn-warning">FWI</button>
+        </form>
     </div>
     <div>
         {{ $posts1->links() }}
@@ -64,53 +70,51 @@
             </tr>
         </thead>
         <tbody>
-            @forelse ($posts1 as $post1)
-            @php
-                $postPredict = $posts2->where('date', $post1->date)
-                                      ->where('provinsi', $post1->provinsi)
-                                      ->where('kabupaten', $post1->kabupaten)
-                                      ->first();
-                $fwi = $posts3->where('date', $post1->date)
-                              ->where('provinsi', $post1->provinsi)
-                              ->where('kabupaten', $post1->kabupaten)
-                              ->first();
-            @endphp
-            <tr>
-                <td>{{ $loop->iteration }}</td>
-                <td>{{ $post1->date }}</td>
-                <td>{{ $post1->temperature }}</td>
-                <td>{{ $postPredict ? round($postPredict->temperature_predict, 1) : '-' }}</td>
-                <td>{{ $post1->humidity }}</td>
-                <td>{{ $postPredict ? round($postPredict->humidity_predict, 1) : '-' }}</td>
-                <td>{{ round($post1->rainfall, 1) }}</td>
-                <td>{{ $postPredict ? round($postPredict->rainfall_predict, 1) : '-' }}</td>
-                <td>{{ $post1->windspeed }}</td>
-                <td>{{ $postPredict ? round($postPredict->windspeed_predict, 1) : '-' }}</td>
-                <td>{{ $fwi ? number_format($fwi->ffmc, 1) : '-' }}</td>
-                <td>{{ $fwi ? number_format($fwi->dmc, 1) : '-' }}</td>
-                <td>{{ $fwi ? number_format($fwi->dc, 1) : '-' }}</td>
-                <td>{{ $fwi ? number_format($fwi->isi, 3) : '-' }}</td>
-                <td>{{ $fwi ? number_format($fwi->bui, 1) : '-' }}</td>
-                <td>{{ $fwi ? number_format($fwi->fwi, 5) : '-' }}</td>
-                <td>
-                    <a href="{{ route('dashboard.posts.edit', ['province_id' => $province->id, 'regency_id' => $regency->id, 'post_id' => $post1->id]) }}" class="badge bg-warning">
-                        <span data-feather="edit"></span>
-                    </a>
-                    <form action="{{ route('dashboard.posts.destroy', ['post' => $post1->id]) }}" method="POST" class="d-inline">
-                        @method('delete')
-                        @csrf
-                        <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')">
-                            <span data-feather="x-circle"></span>
-                        </button>
-                    </form>
-                </td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="16" class="text-center">No data available</td>
-            </tr>
-            @endforelse
+            @foreach ($posts1 as $post1)
+                @php
+                    $postPredict = $posts2->where('date', $post1->date)
+                                          ->where('provinsi', $post1->provinsi)
+                                          ->where('kabupaten', $post1->kabupaten)
+                                          ->first();
+                    $fwi = $posts3->where('date', $post1->date)
+                                  ->where('provinsi', $post1->provinsi)
+                                  ->where('kabupaten', $post1->kabupaten)
+                                  ->first();
+                @endphp
+                <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $post1->date }}</td>
+                    <td>{{ $post1->temperature ?? '-' }}</td>
+                    <td>{{ $postPredict ? round($postPredict->temperature_predict, 1) : '-' }}</td>
+                    <td>{{ $post1->humidity ?? '-' }}</td>
+                    <td>{{ $postPredict ? round($postPredict->humidity_predict, 1) : '-' }}</td>
+                    <td>{{ isset($post1->rainfall) ? round($post1->rainfall, 1) : '-' }}</td>
+                    <td>{{ $postPredict ? round($postPredict->rainfall_predict, 1) : '-' }}</td>
+                    <td>{{ $post1->windspeed ?? '-' }}</td>
+                    <td>{{ $postPredict ? round($postPredict->windspeed_predict, 1) : '-' }}</td>
+                    <td>{{ $fwi ? number_format($fwi->ffmc, 1) : '-' }}</td>
+                    <td>{{ $fwi ? number_format($fwi->dmc, 1) : '-' }}</td>
+                    <td>{{ $fwi ? number_format($fwi->dc, 1) : '-' }}</td>
+                    <td>{{ $fwi ? number_format($fwi->isi, 3) : '-' }}</td>
+                    <td>{{ $fwi ? number_format($fwi->bui, 1) : '-' }}</td>
+                    <td>{{ $fwi ? number_format($fwi->fwi, 5) : '-' }}</td>
+                    <td>
+                        <a href="{{ route('dashboard.posts.edit', ['province_id' => $province->id, 'regency_id' => $regency->id, 'post_id' => $post1->id]) }}" class="badge bg-warning">
+                            <span data-feather="edit"></span>
+                        </a>
+                        <form action="{{ route('dashboard.posts.destroy', ['post' => $post1->id]) }}" method="POST" class="d-inline">
+                            @method('delete')
+                            @csrf
+                            <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')">
+                                <span data-feather="x-circle"></span>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            @endforeach
         </tbody>
     </table>
 </div>
+
+{{ $posts1->appends(['province' => $province->id, 'regency' => $regency->id])->links() }}
 @endsection
