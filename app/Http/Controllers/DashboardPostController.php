@@ -56,8 +56,12 @@ public function importCSV()
 {
     $provinces = Province::all();
 
+    // Store the previous URL in the session
+    session(['previous_url' => url()->previous()]);
+
     return view('dashboard.posts.importcsv', compact('provinces'));
 }
+
 public function handleCSVImport(Request $request)
 {
     $validatedData = $request->validate([
@@ -72,8 +76,13 @@ public function handleCSVImport(Request $request)
 
     Excel::import(new ProvinceImport(), $file, $type);
 
-    return redirect()->route('dashboard.posts.index')->with('success', 'CSV file has been imported successfully.');
+    // Get the previous URL from the session
+    $previousUrl = session('previous_url', route('dashboard.posts.index'));
+
+    // Redirect back to the previous URL with a success message
+    return redirect($previousUrl)->with('success', 'CSV file has been imported successfully.');
 }
+
 
     
 
@@ -83,8 +92,10 @@ public function handleCSVImport(Request $request)
     public function create()
     {
         $provinces = Province::all();
-        // $categories = Category::all();
-
+    
+        // Store the previous URL in the session
+        session(['previous_url' => url()->previous()]);
+    
         return view('dashboard.posts.create', compact('provinces'));
     }
 
@@ -106,26 +117,36 @@ public function handleCSVImport(Request $request)
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'date' => 'required|date_format:d-m-Y',
-            'provinsi' => 'required',
-            'kabupaten' => 'required',
-            'temperature' => 'required',
-            'humidity' => 'required',
-            'rainfall' => 'required',
-            'windspeed' => 'required',
-        ]);
-    
-        $validatedData['user_id'] = auth()->user()->id;
-        // Use the hidden input for the date formatted correctly for the database
-        $validatedData['date'] = date('Y-m-d', strtotime($request->formatted_date));
-    
-        Post::create($validatedData);
-    
-        return redirect('/dashboard/posts')->with('success', 'New post has been added!');
-    }
+/**
+ * Store a newly created resource in storage.
+ */
+public function store(Request $request)
+{
+    $validatedData = $request->validate([
+        'date' => 'required|date_format:d-m-Y',
+        'provinsi' => 'required',
+        'kabupaten' => 'required',
+        'temperature' => 'required|numeric',
+        'humidity' => 'required|numeric',
+        'rainfall' => 'required|numeric',
+        'windspeed' => 'required|numeric',
+    ]);
+
+    $validatedData['user_id'] = auth()->user()->id;
+
+    // Convert the date to the correct format for the database
+    $validatedData['date'] = date('Y-m-d', strtotime($request->date));
+
+    // Create a new post with the validated data
+    Post::create($validatedData);
+
+    // Get the previous URL from the session
+    $previousUrl = session('previous_url', '/dashboard/posts');
+
+    // Redirect back to the previous URL with a success message
+    return redirect($previousUrl)->with('success', 'New post has been added!');
+}
+
     
 
     /**
@@ -373,12 +394,35 @@ public function handleCSVImport(Request $request)
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Post $post)
+    public function destroy(PostPredict $post)
     {
+        // Find related entries in PostPredict and Fwi by date, province, and regency
+        $relatedPostPredicts = Post::where('date', $post->date)
+                                          ->where('provinsi', $post->provinsi)
+                                          ->where('kabupaten', $post->kabupaten)
+                                          ->get();
+    
+        $relatedFwis = Fwi::where('date', $post->date)
+                          ->where('provinsi', $post->provinsi)
+                          ->where('kabupaten', $post->kabupaten)
+                          ->get();
+    
+        // Delete related entries in PostPredict
+        foreach ($relatedPostPredicts as $postPredict) {
+            $postPredict->delete();
+        }
+    
+        // Delete related entries in Fwi
+        foreach ($relatedFwis as $fwi) {
+            $fwi->delete();
+        }
+    
+        // Delete the main post
         $post->delete();
     
-        return redirect()->back()->with('success', 'Post has been deleted!');
+        return redirect()->back()->with('success', 'Post and related data have been deleted!');
     }
+    
 
 
     public function showRegenciesByProvince($provinceId)
