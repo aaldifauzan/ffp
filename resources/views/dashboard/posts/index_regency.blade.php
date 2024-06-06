@@ -28,9 +28,10 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $regency->name }}</td>
                         <td>
-                            <a href="{{ route('dashboard.posts.show', ['province_id' => $province->id, 'regency_id' => $regency->id]) }}" class="badge bg-info">
+                            <a href="{{ route('dashboard.posts.show', ['province' => $province->id, 'regency' => $regency->id]) }}" class="badge bg-info">
                                 <span data-feather="eye"></span>
                             </a>
+
 
                             <form action="/dashboard/posts/" method="POST" class="d-inline">
                               @method('delete')

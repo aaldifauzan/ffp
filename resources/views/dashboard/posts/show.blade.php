@@ -34,12 +34,6 @@
             <input type="hidden" name="kabupaten" value="{{ $regency->id }}">
             <button type="submit" class="btn btn-warning">Forecast</button>
         </form>
-        <form action="{{ route('fwi') }}" method="POST" class="d-inline">
-            @csrf
-            <input type="hidden" name="provinsi" value="{{ $province->id }}">
-            <input type="hidden" name="kabupaten" value="{{ $regency->id }}">
-            <button type="submit" class="btn btn-warning">FWI</button>
-        </form>
     </div>
     <div>
         {{ $posts1->links() }}

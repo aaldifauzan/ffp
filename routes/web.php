@@ -63,9 +63,12 @@ Route::get('/dashboard/posts/edit/{province_id}/{regency_id}/{post_id}', [Dashbo
     ->middleware('auth');
 
 
-Route::get('/dashboard/posts/show/{province_id}/{regency_id}', [DashboardPostController::class, 'show'])
+    Route::get('/dashboard/posts/show/{province_id}/{regency_id}', [DashboardPostController::class, 'show'])
     ->name('dashboard.posts.show')
     ->middleware('auth');
+
+    Route::get('/dashboard/posts/{province}/{regency}', [DashboardPostController::class, 'show'])->name('dashboard.posts.show');
+
 
 Route::delete('/dashboard/posts/{post}', [DashboardPostController::class, 'destroy'])
     ->name('dashboard.posts.destroy');
@@ -81,7 +84,7 @@ Route::delete('/dashboard/posts/{post}', [DashboardPostController::class, 'destr
 
     Route::post('/forecast', [DashboardPostController::class, 'forecast'])->name('forecast');
 
-    Route::post('/fwi', [DashboardPostController::class, 'fwi'])->name('fwi');
+
 
 
     Route::get('/dashboard/posts/{province}/{regency}', [DashboardPostController::class, 'show'])->name('dashboard.posts.show');
