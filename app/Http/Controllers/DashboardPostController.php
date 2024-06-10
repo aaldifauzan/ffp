@@ -394,31 +394,37 @@ public function store(Request $request)
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(PostPredict $post)
+    public function destroy($date, $provinsi, $kabupaten)
     {
-        // Find related entries in PostPredict and Fwi by date, province, and regency
-        $relatedPostPredicts = Post::where('date', $post->date)
-                                          ->where('provinsi', $post->provinsi)
-                                          ->where('kabupaten', $post->kabupaten)
+        // Hapus entri terkait di PostPredict
+        $relatedPostPredicts = PostPredict::where('date', $date)
+                                          ->where('provinsi', $provinsi)
+                                          ->where('kabupaten', $kabupaten)
                                           ->get();
     
-        $relatedFwis = Fwi::where('date', $post->date)
-                          ->where('provinsi', $post->provinsi)
-                          ->where('kabupaten', $post->kabupaten)
-                          ->get();
-    
-        // Delete related entries in PostPredict
         foreach ($relatedPostPredicts as $postPredict) {
             $postPredict->delete();
         }
     
-        // Delete related entries in Fwi
+        // Hapus entri terkait di Fwi
+        $relatedFwis = Fwi::where('date', $date)
+                          ->where('provinsi', $provinsi)
+                          ->where('kabupaten', $kabupaten)
+                          ->get();
+    
         foreach ($relatedFwis as $fwi) {
             $fwi->delete();
         }
     
-        // Delete the main post
-        $post->delete();
+        // Hapus entri terkait di Post
+        $relatedPosts = Post::where('date', $date)
+                            ->where('provinsi', $provinsi)
+                            ->where('kabupaten', $kabupaten)
+                            ->get();
+    
+        foreach ($relatedPosts as $post) {
+            $post->delete();
+        }
     
         return redirect()->back()->with('success', 'Post and related data have been deleted!');
     }

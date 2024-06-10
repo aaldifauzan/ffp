@@ -2,85 +2,77 @@
 
 @section('container')
 <div class="container mt-4">
-    <form action="{{ route('maps') }}" method="GET">
+    <form id="fwiForm">
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="provinsi">Provinsi</label>
-                <select class="form-control @error('provinsi') is-invalid @enderror" id="provinsi" name="provinsi" required>
-                    <option value="" @if(old('provinsi') == '' || !$selectedProvinsi) selected @endif>-- Provinsi --</option>
+                <select class="form-control" id="provinsi" name="provinsi" required>
+                    <option value="" selected>-- Provinsi --</option>
                     @foreach ($provinces as $provinsi)
-                        <option value="{{ $provinsi->id }}" @if(old('provinsi') == $provinsi->id || $selectedProvinsi == $provinsi->id) selected @endif>
+                        <option value="{{ $provinsi->id }}">
                             {{ $provinsi->name }}
                         </option>
                     @endforeach
                 </select>
-                @error('provinsi')
-                    <div class="invalid-feedback">
-                        {{ $message }}
-                    </div>
-                @enderror
             </div>
             <div class="form-group col-md-6">
                 <label for="kabupaten">Kabupaten/Kota</label>
-                <select class="form-control @error('kabupaten') is-invalid @enderror" id="kabupaten" name="kabupaten">
-                    <option value="" @if(!$selectedKabupaten) selected @endif>-- Kabupaten/Kota --</option>
-                    @if($selectedProvinsi)
-                        @foreach ($provinces->find($selectedProvinsi)->regencies as $kabupaten)
-                            <option value="{{ $kabupaten->id }}" @if($selectedKabupaten == $kabupaten->id) selected @endif>
-                                {{ $kabupaten->name }}
-                            </option>
-                        @endforeach
-                    @endif
+                <select class="form-control" id="kabupaten" name="kabupaten">
+                    <option value="" selected>-- Kabupaten/Kota --</option>
                 </select>
-                @error('kabupaten')
-                    <div class="invalid-feedback">
-                        {{ $message }}
-                    </div>
-                @enderror
             </div>
         </div>
-
-        {{-- <div class="form-row">
+        <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="start_date">Tanggal Awal:</label>
-                <input type="date" class="form-control" id="start_date" name="start_date" value="{{ old('start_date') ?? now()->format('Y-m-d') }}">
+                <input type="date" class="form-control" id="start_date" name="start_date" value="{{ now()->format('Y-m-d') }}">
             </div>
             <div class="form-group col-md-6">
                 <label for="end_date">Tanggal Akhir:</label>
-                <input type="date" class="form-control" id="end_date" name="end_date" value="{{ old('end_date') ?? now()->addDays(7)->format('Y-m-d') }}" min="{{ now()->format('Y-m-d') }}" max="{{ now()->addDays(30)->format('Y-m-d') }}">
+                <input type="date" class="form-control" id="end_date" name="end_date" value="{{ now()->addDays(7)->format('Y-m-d') }}">
             </div>
-        </div> --}}
-        
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" id="predict-tab" data-toggle="tab" href="#predict" role="tab" aria-controls="predict" aria-selected="true">Predict</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="forecast-tab" data-toggle="tab" href="#forecast" role="tab" aria-controls="forecast" aria-selected="false">Forecast</a>
-            </li>
-        </ul>
-        
-        <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="predict" role="tabpanel" aria-labelledby="predict-tab">
-                <div class="form-row mb-3 mt-3">
-                    <div class="col-md-12">
-                        <button type="submit" class="btn btn-primary btn-block" id="predictButton">Predict</button>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="forecast" role="tabpanel" aria-labelledby="forecast-tab">
-                <div class="form-row mb-3 mt-3">
-                    <div class="col-md-12">
-                        <button type="submit" class="btn btn-primary btn-block" id="forecastButton">Forecast</button>
-                    </div>
-                </div>
+        </div>
+        <div class="form-row mb-3 mt-3">
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-primary btn-block" id="fetchFWIDataButton">Submit</button>
             </div>
         </div>
     </form>
 
     <div id="map"></div>
+    <div class="row">
+        
+            <canvas id="ffmcChart" width="800" height="200"></canvas>
+        
+    </div>
+    <div class="row">
+        
+            <canvas id="dmcChart" width="800" height="200"></canvas>
+        
+    </div>
+    <div class="row">
+        
+            <canvas id="dcChart" width="800" height="200"></canvas>
+        
+    </div>
+    <div class="row">
+        
+            <canvas id="isiChart" width="800" height="200"></canvas>
+        
+    </div>
+    <div class="row">
+        
+            <canvas id="buiChart" width="800" height="200"></canvas>
+        
+    </div>
+    <div class="row">
+        
+            <canvas id="fwiChart" width="800" height="200"></canvas>
+        
+    </div>
     <div id="results"></div>
 </div>
+
 <style>
     #map { height: 500px; }
     .legend {
@@ -100,12 +92,12 @@
     }
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 var geojsonLayer;
 var geojsonData;
-var colorMapping = {}; // Initialize color mapping globally
-var savedColorMapping = {}; // Save existing color mapping
-
+var colorMapping = {};
+var savedColorMapping = {};
 var map = L.map('map').setView([-1.269160, 117.825264], 5);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -136,10 +128,11 @@ function onMapClick(e) {
 // Adding click event listener to the map
 map.on('click', onMapClick);
 
+var charts = {};
+
 document.addEventListener('DOMContentLoaded', function() {
     loadMapData();
 
-    // Add event listeners for dropdown changes
     document.getElementById('provinsi').addEventListener('change', function() {
         saveCurrentColorMapping();
         if (this.value) {
@@ -161,6 +154,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 loadAllData();
             }
         }
+    });
+
+    document.getElementById('fwiForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        fetchFWIData();
     });
 });
 
@@ -184,8 +182,7 @@ function loadAllData() {
                 }
             }).addTo(map);
 
-            applyColorMapping(); // Apply color mapping after loading data
-
+            applyColorMapping();
             map.fitBounds(geojsonLayer.getBounds());
             fetchFWIDataCurrent();
         });
@@ -203,7 +200,7 @@ function fetchFWIDataCurrent() {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            colorMapping = data.colorMapping; // Update global color mapping
+            colorMapping = data.colorMapping;
             applyColorMapping();
         } else {
             document.getElementById('results').innerHTML = '<p>' + data.message + '</p>';
@@ -212,12 +209,280 @@ function fetchFWIDataCurrent() {
     .catch(error => console.error('Error:', error));
 }
 
+function fetchFWIData() {
+    var provinsi = document.getElementById('provinsi').value;
+    var kabupaten = document.getElementById('kabupaten').value;
+    var startDate = document.getElementById('start_date').value;
+    var endDate = document.getElementById('end_date').value;
+
+    fetch('{{ route('fwi-history') }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ provinsi: provinsi, kabupaten: kabupaten, start_date: startDate, end_date: endDate }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            clearCharts();
+            displayFWICharts(data.data);
+        } else {
+            document.getElementById('results').innerHTML = '<p>' + data.message + '</p>';
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function clearCharts() {
+    if (charts.ffmcChart) charts.ffmcChart.destroy();
+    if (charts.dmcChart) charts.dmcChart.destroy();
+    if (charts.dcChart) charts.dcChart.destroy();
+    if (charts.isiChart) charts.isiChart.destroy();
+    if (charts.buiChart) charts.buiChart.destroy();
+    if (charts.fwiChart) charts.fwiChart.destroy();
+}
+
+function displayFWICharts(data) {
+    var labels = data.map(entry => entry.date);
+    var ffmc = data.map(entry => entry.FFMC);
+    var dmc = data.map(entry => entry.DMC);
+    var dc = data.map(entry => entry.DC);
+    var isi = data.map(entry => entry.ISI);
+    var bui = data.map(entry => entry.BUI);
+    var fwi = data.map(entry => entry.FWI);
+
+    var ctxFFMC = document.getElementById('ffmcChart').getContext('2d');
+    var ctxDMC = document.getElementById('dmcChart').getContext('2d');
+    var ctxDC = document.getElementById('dcChart').getContext('2d');
+    var ctxISI = document.getElementById('isiChart').getContext('2d');
+    var ctxBUI = document.getElementById('buiChart').getContext('2d');
+    var ctxFWI = document.getElementById('fwiChart').getContext('2d');
+
+    charts.ffmcChart = new Chart(ctxFFMC, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'FFMC',
+                data: ffmc,
+                borderColor: '#FF4560',
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: 'FFMC Data'
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Index'
+                    }
+                }
+            }
+        }
+    });
+
+    charts.dmcChart = new Chart(ctxDMC, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'DMC',
+                data: dmc,
+                borderColor: '#00E396',
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: 'DMC Data'
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Index'
+                    }
+                }
+            }
+        }
+    });
+
+    charts.dcChart = new Chart(ctxDC, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'DC',
+                data: dc,
+                borderColor: '#FEB019',
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: 'DC Data'
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Index'
+                    }
+                }
+            }
+        }
+    });
+
+    charts.isiChart = new Chart(ctxISI, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'ISI',
+                data: isi,
+                borderColor: '#775DD0',
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: 'ISI Data'
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Index'
+                    }
+                }
+            }
+        }
+    });
+
+    charts.buiChart = new Chart(ctxBUI, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'BUI',
+                data: bui,
+                borderColor: '#546E7A',
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: 'BUI Data'
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Index'
+                    }
+                }
+            }
+        }
+    });
+
+    charts.fwiChart = new Chart(ctxFWI, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'FWI',
+                data: fwi,
+                borderColor: '#26a69a',
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: 'FWI Data'
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Index'
+                    }
+                }
+            }
+        }
+    });
+}
+
 function saveCurrentColorMapping() {
-    savedColorMapping = { ...colorMapping }; // Save the existing color mapping
+    savedColorMapping = { ...colorMapping };
 }
 
 function restoreSavedColorMapping() {
-    colorMapping = { ...savedColorMapping }; // Restore the saved color mapping
+    colorMapping = { ...savedColorMapping };
     applyColorMapping();
 }
 
@@ -258,7 +523,6 @@ function zoomToSelectedArea(type, id) {
             return feature.properties.alt_name.toLowerCase() === id.toLowerCase();
         });
 
-        // Check if no Kabupaten is selected (id is empty) and zoom back to province
         if (filteredData.length === 0) {
             var selectedProvinsi = document.getElementById('provinsi').value;
             if (selectedProvinsi) {
@@ -279,12 +543,10 @@ function zoomToSelectedArea(type, id) {
         }
     }).addTo(map);
 
-    restoreSavedColorMapping(); // Restore the saved color mapping
-
+    restoreSavedColorMapping();
     map.fitBounds(geojsonLayer.getBounds());
 }
 
-// Add the legend to the map
 var legend = L.control({position: 'bottomright'});
 
 legend.onAdd = function (map) {

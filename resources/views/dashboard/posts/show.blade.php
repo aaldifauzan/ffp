@@ -96,13 +96,14 @@
                         <a href="{{ route('dashboard.posts.edit', ['province_id' => $province->id, 'regency_id' => $regency->id, 'post_id' => $post1->id]) }}" class="badge bg-warning">
                             <span data-feather="edit"></span>
                         </a>
-                        <form action="{{ route('dashboard.posts.destroy', ['post' => $post1->id]) }}" method="POST" class="d-inline">
+                        <form action="{{ route('dashboard.posts.destroy', ['date' => $post1->date, 'provinsi' => $post1->provinsi, 'kabupaten' => $post1->kabupaten]) }}" method="POST" class="d-inline">
                             @method('delete')
                             @csrf
                             <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')">
                                 <span data-feather="x-circle"></span>
                             </button>
                         </form>
+                        
                     </td>
                 </tr>
             @endforeach

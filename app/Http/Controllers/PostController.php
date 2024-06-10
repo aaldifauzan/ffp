@@ -66,21 +66,21 @@ class PostController extends Controller
     
         $startDate = $request->query('start_date', now()->format('Y-m-d'));
         $endDate = $request->query('end_date', now()->addDays(7)->format('Y-m-d'));        
-
+    
         $geojsonData = $this->loadGeojsonData($selectedProvinsi, $selectedKabupaten);
         $colorMapping = [];
-
+    
         // Fetch initial FWI data for the current date
         $currentFWIResponse = Http::post('http://127.0.0.1:5000/api/fwi-data-map', [
             'date' => now()->format('Y-m-d'),
         ]);
-
+    
         if ($currentFWIResponse->successful()) {
             $fwiData = $currentFWIResponse->json();
             foreach ($fwiData as $entry) {
                 $alt_name = $entry['name'];
                 $fwi = $entry['FWI'];
-
+    
                 if ($fwi < 1) {
                     $colorMapping[$alt_name] = '#0E7AD1';
                 } elseif ($fwi < 6) {
@@ -92,9 +92,10 @@ class PostController extends Controller
                 }
             }
         }
-
+    
         return view('maps', compact('provinces', 'title', 'active', 'selectedProvinsi', 'selectedKabupaten', 'startDate', 'endDate', 'geojsonData', 'colorMapping'));
     }
+    
 
     private function loadGeojsonData($selectedProvinsi, $selectedKabupaten)
     {
@@ -147,21 +148,22 @@ class PostController extends Controller
 
     public function getFWIDataCurrent(Request $request)
     {
-        $date = $request->input('date');
-
-        $response = Http::post('http://127.0.0.1:5000/api/fwi-data-map', [
+        $date = $request->input('date', date('Y-m-d'));  // Default ke hari ini jika tanggal tidak disediakan
+    
+        $response = Http::post('http://127.0.0.1:5000/api/fwi-data-current', [
             'date' => $date,
         ]);
-
+    
         if ($response->successful()) {
             $fwiData = $response->json();
             $colorMapping = [];
-
+            $colorid = [];  // Tambahkan inisialisasi untuk colorid
+    
             foreach ($fwiData as $entry) {
                 $alt_name = $entry['name'];
                 $id = $entry['kabupaten_id'];
                 $fwi = $entry['FWI'];
-
+    
                 if ($fwi < 1) {
                     $colorMapping[$alt_name] = '#0E7AD1';
                 } elseif ($fwi < 6) {
@@ -171,7 +173,7 @@ class PostController extends Controller
                 } else {
                     $colorMapping[$alt_name] = '#FF0000';
                 }
-
+    
                 if ($fwi < 1) {
                     $colorid[$id] = '#ADD8E6';
                 } elseif ($fwi < 6) {
@@ -182,7 +184,7 @@ class PostController extends Controller
                     $colorid[$id] = '#FF0000';
                 }
             }
-
+    
             return response()->json([
                 'status' => 'success',
                 'colorMapping' => $colorMapping,
@@ -196,6 +198,35 @@ class PostController extends Controller
             ]);
         }
     }
+    
+    public function getFWIHistoryData(Request $request)
+{
+    $selectedProvinsi = $request->input('provinsi');
+    $selectedKabupaten = $request->input('kabupaten');
+    $startDate = $request->input('start_date');
+    $endDate = $request->input('end_date');
+
+    $response = Http::post('http://127.0.0.1:5000/api/fwi-data-all', [
+        'start_date' => $startDate,
+        'end_date' => $endDate,
+        'provinsi' => $selectedProvinsi,
+        'kabupaten' => $selectedKabupaten,
+    ]);
+
+    if ($response->successful()) {
+        return response()->json([
+            'status' => 'success',
+            'data' => $response->json()
+            
+        ]);
+    } else {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'No data found or an error occurred.'
+        ]);
+    }
+}
+
     
 
 

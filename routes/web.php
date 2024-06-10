@@ -25,6 +25,8 @@ Route::get('/maps', [PostController::class, 'maps'])->name('maps');
 Route::post('/api/fwi-data-range', [PostController::class, 'getFWIDataRange'])->name('fwi-data-range');
 Route::post('/api/fwi-data-current', [PostController::class, 'getFWIDataCurrent'])->name('fwi-data-current');
 
+Route::post('/api/fwi-history', [PostController::class, 'getFWIHistoryData'])->name('fwi-history');
+
 
 
 Route::get('/history', [PostController::class, 'history'])->name('history');
@@ -88,3 +90,6 @@ Route::delete('/dashboard/posts/{post}', [DashboardPostController::class, 'destr
 
 
     Route::get('/dashboard/posts/{province}/{regency}', [DashboardPostController::class, 'show'])->name('dashboard.posts.show');
+
+
+    Route::delete('/dashboard/posts/{date}/{provinsi}/{kabupaten}', [DashboardPostController::class, 'destroy'])->name('dashboard.posts.destroy');
