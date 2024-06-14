@@ -5,6 +5,18 @@
     <h1 class="h2">Import CSV</h1>
 </div>
 
+@if(session()->has('success'))
+<div class="alert alert-success">
+    {{ session('success') }}
+</div>
+@endif
+
+@if(session()->has('error'))
+<div class="alert alert-danger">
+    {{ session('error') }}
+</div>
+@endif
+
 <!-- CSV Import Form -->
 <form method="post" action="{{ route('dashboard.posts.handleCSVImport') }}" class="mb-5" enctype="multipart/form-data">
     @csrf
@@ -41,15 +53,16 @@
         const provinsiId = this.value;
         const kabupatenSelect = document.getElementById('kabupaten');
 
-        // Clear existing options
-        kabupatenSelect.innerHTML = '<option value="">-- Kabupaten/Kota --</option>';
+// Clear existing options
+kabupatenSelect.innerHTML = '<option value="">-- Kabupaten/Kota --</option>';
 
-        if (provinsiId) {
-            // Fetch and add kabupaten options based on the selected province using AJAX or another method
-            // You might need to implement this logic based on your application's structure
-            // For demonstration purposes, I'm leaving it as is.
-        }
-    });
+if (provinsiId) {
+    // Fetch and add kabupaten options based on the selected province using AJAX or another method
+    // You might need to implement this logic based on your application's structure
+    // For demonstration purposes, I'm leaving it as is.
+}
+});
 </script>
 
 @endsection
+

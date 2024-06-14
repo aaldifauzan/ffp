@@ -64,6 +64,8 @@ public function importCSV()
 
 public function handleCSVImport(Request $request)
 {
+    set_time_limit(0); // Set the maximum execution time to unlimited (0)
+
     $validatedData = $request->validate([
         'provinsi' => 'required',
         'kabupaten' => 'required',
@@ -72,16 +74,27 @@ public function handleCSVImport(Request $request)
 
     $file = $request->file('csv_file');
 
-    $type = 'csv';
+    try {
+        $type = 'csv';
+        Excel::import(new ProvinceImport(), $file, $type);
 
-    Excel::import(new ProvinceImport(), $file, $type);
+        // Get the previous URL from the session
+        $previousUrl = session('previous_url', route('dashboard.posts.index'));
 
-    // Get the previous URL from the session
-    $previousUrl = session('previous_url', route('dashboard.posts.index'));
+        // Redirect back to the previous URL with a success message
+        return redirect($previousUrl)->with('success', 'CSV file has been imported successfully.');
+    } catch (\Exception $e) {
+        // Log the detailed error message for debugging purposes
+        Log::error('Failed to import CSV file: ' . $e->getMessage());
 
-    // Redirect back to the previous URL with a success message
-    return redirect($previousUrl)->with('success', 'CSV file has been imported successfully.');
+        // Redirect back to the importcsv page with a short error message
+        return redirect()->route('dashboard.posts.importcsv')->with('error', 'Failed to import CSV file. Please check the file format and data.');
+    }
 }
+
+
+
+
 
 
     
