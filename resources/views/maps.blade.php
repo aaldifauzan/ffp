@@ -41,36 +41,24 @@
 
     <div id="map"></div>
     <div class="row">
-        
-            <canvas id="ffmcChart" width="800" height="200"></canvas>
-        
+        <canvas id="ffmcChart" width="800" height="200"></canvas>
     </div>
     <div class="row">
-        
-            <canvas id="dmcChart" width="800" height="200"></canvas>
-        
+        <canvas id="dmcChart" width="800" height="200"></canvas>
     </div>
     <div class="row">
-        
-            <canvas id="dcChart" width="800" height="200"></canvas>
-        
+        <canvas id="dcChart" width="800" height="200"></canvas>
     </div>
     <div class="row">
-        
-            <canvas id="isiChart" width="800" height="200"></canvas>
-        
+        <canvas id="isiChart" width="800" height="200"></canvas>
     </div>
     <div class="row">
-        
-            <canvas id="buiChart" width="800" height="200"></canvas>
-        
+        <canvas id="buiChart" width="800" height="200"></canvas>
     </div>
     <div class="row">
-        
-            <canvas id="fwiChart" width="800" height="200"></canvas>
-        
+        <canvas id="fwiChart" width="800" height="200"></canvas>
     </div>
-    <div id="results"></div>
+    <div id="results"></div>    
 </div>
 
 <style>
@@ -230,9 +218,12 @@ function fetchFWIData() {
             displayFWICharts(data.data);
         } else {
             document.getElementById('results').innerHTML = '<p>' + data.message + '</p>';
+            clearCharts();
         }
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+        clearCharts();
+    });
 }
 
 function clearCharts() {
@@ -242,6 +233,8 @@ function clearCharts() {
     if (charts.isiChart) charts.isiChart.destroy();
     if (charts.buiChart) charts.buiChart.destroy();
     if (charts.fwiChart) charts.fwiChart.destroy();
+
+    charts = {};
 }
 
 function displayFWICharts(data) {

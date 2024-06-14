@@ -219,11 +219,6 @@ class PostController extends Controller
             'data' => $response->json()
             
         ]);
-    } else {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'No data found or an error occurred.'
-        ]);
     }
 }
 
