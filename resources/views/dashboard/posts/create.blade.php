@@ -12,7 +12,7 @@
             <div class="">
                 <label for="date" class="form-label">Date</label>
                 <div class="input-group date">
-                    <input type="text" class="form-control @error('date') is-invalid @enderror" id="date" name="date" required autofocus value="{{ old('date') }}" placeholder="dd-mm-yyyy">
+                    <input type="text" class="form-control @error('date') is-invalid @enderror" id="date" name="date" required readonly placeholder="dd-mm-yyyy" value="{{ old('date') }}">
                     @error('date')
                     <div class="invalid-feedback">
                         {{ $message }}
@@ -88,19 +88,40 @@
     </form>
 </div>
 
-<script>
-    document.getElementById('postForm').addEventListener('submit', function (event) {
-        const dateInput = document.getElementById('date');
-        const dateValue = dateInput.value;
+<!-- Include jQuery and Bootstrap Datepicker scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"/>
 
-        if (dateValue) {
-            const dateParts = dateValue.split('-');
-            if (dateParts.length === 3) {
-                const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
-                document.getElementById('formatted_date').value = formattedDate;
+<style>
+    /* Custom CSS to change the color of the readonly input field */
+    input[readonly] {
+        background-color: #ffffff !important;
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    $(document).ready(function(){
+        $('#date').datepicker({
+            format: 'dd-mm-yyyy',
+            autoclose: true,
+            todayHighlight: true
+        });
+
+        $('#postForm').on('submit', function (event) {
+            const dateInput = document.getElementById('date');
+            const dateValue = dateInput.value;
+
+            if (dateValue) {
+                const dateParts = dateValue.split('-');
+                if (dateParts.length === 3) {
+                    const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+                    document.getElementById('formatted_date').value = formattedDate;
+                }
             }
-        }
+        });
     });
 </script>
-
 @endsection

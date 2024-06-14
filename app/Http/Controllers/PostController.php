@@ -231,88 +231,93 @@ class PostController extends Controller
     
 
 
-public function history(Request $request, WeatherChart $weatherChart)
-{
-    $provinces = Province::all();
-    $selectedProvinsi = $request->query('provinsi');
-    $selectedKabupaten = $request->query('kabupaten');
-    $startDate = $request->input('start_date');
-    $endDate = $request->input('end_date');
-
-    // Fetch actual data
-    $postsQuery = Post::query();
-    if ($selectedProvinsi) {
-        $postsQuery->where('provinsi', $selectedProvinsi);
-    }
-    if ($selectedKabupaten) {
-        $postsQuery->where('kabupaten', $selectedKabupaten);
-    }
-    if ($startDate && $endDate) {
-        $postsQuery->whereBetween('date', [$startDate, $endDate]);
-    }
-    $posts = $postsQuery->get();
-
-    // Fetch predicted data
-    $postPredictsQuery = PostPredict::query();
-    if ($selectedProvinsi) {
-        $postPredictsQuery->where('provinsi', $selectedProvinsi);
-    }
-    if ($selectedKabupaten) {
-        $postPredictsQuery->where('kabupaten', $selectedKabupaten);
-    }
-    if ($startDate && $endDate) {
-        $postPredictsQuery->whereBetween('date', [$startDate, $endDate]);
-    }
-    $postPredicts = $postPredictsQuery->get();
-
-    // If no posts data found, set error message in session
-    if ($posts->isEmpty()) {
-        return redirect()->back()->with('error', 'No data found matching the provided filters.');
-    }
-
-    // Find common dates if postPredicts is not empty
-    if (!$postPredicts->isEmpty()) {
-        $commonDates = $posts->pluck('date')->intersect($postPredicts->pluck('date'));
-
-        // Filter the datasets by common dates
-        $posts = $posts->whereIn('date', $commonDates);
-        $postPredicts = $postPredicts->whereIn('date', $commonDates);
-    }
-
-    // Extract data for charts
-    $chartLabels = $posts->pluck('date')->toArray();
-
-    // Actual data
-    $temperatureData = $posts->pluck('temperature')->toArray();
-    $humidityData = $posts->pluck('humidity')->toArray();
-    $rainfallData = $posts->pluck('rainfall')->toArray();
-    $windspeedData = $posts->pluck('windspeed')->toArray();
-
-    if ($postPredicts->isEmpty()) {
-        // Build weather charts without predicted data
-        $temperatureChart = $weatherChart->buildWeatherChart($temperatureData, [], $chartLabels, 'Temperature');
-        $humidityChart = $weatherChart->buildWeatherChart($humidityData, [], $chartLabels, 'Humidity');
-        $rainfallChart = $weatherChart->buildWeatherChart($rainfallData, [], $chartLabels, 'Rainfall');
-        $windspeedChart = $weatherChart->buildWeatherChart($windspeedData, [], $chartLabels, 'Windspeed');
-    } else {
-        // Predicted data
-        $temperaturePredictData = $postPredicts->pluck('temperature_predict')->toArray();
-        $humidityPredictData = $postPredicts->pluck('humidity_predict')->toArray();
-        $rainfallPredictData = $postPredicts->pluck('rainfall_predict')->toArray();
-        $windspeedPredictData = $postPredicts->pluck('windspeed_predict')->toArray();
-
-        // Build weather charts with predicted data
+    public function history(Request $request, WeatherChart $weatherChart)
+    {
+        $provinces = Province::all();
+        $selectedProvinsi = $request->query('provinsi');
+        $selectedKabupaten = $request->query('kabupaten');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+    
+        // Set pagination limit
+        $paginationLimit = 1000; // Adjust as needed
+    
+        // Fetch actual data with pagination
+        $postsQuery = Post::query();
+        if ($selectedProvinsi) {
+            $postsQuery->where('provinsi', $selectedProvinsi);
+        }
+        if ($selectedKabupaten) {
+            $postsQuery->where('kabupaten', $selectedKabupaten);
+        }
+        if ($startDate && $endDate) {
+            $postsQuery->whereBetween('date', [$startDate, $endDate]);
+        }
+        $posts = $postsQuery->paginate($paginationLimit);
+    
+        // Fetch predicted data with pagination
+        $postPredictsQuery = PostPredict::query();
+        if ($selectedProvinsi) {
+            $postPredictsQuery->where('provinsi', $selectedProvinsi);
+        }
+        if ($selectedKabupaten) {
+            $postPredictsQuery->where('kabupaten', $selectedKabupaten);
+        }
+        if ($startDate && $endDate) {
+            $postPredictsQuery->whereBetween('date', [$startDate, $endDate]);
+        }
+        $postPredicts = $postPredictsQuery->paginate($paginationLimit);
+    
+        // If no posts data found, set error message in session
+        if ($posts->isEmpty()) {
+            return redirect()->back()->with('error', 'No data found matching the provided filters.');
+        }
+    
+        // Extract data for charts
+        $chartLabels = $posts->pluck('date')->toArray();
+    
+        // Actual data
+        $temperatureData = $posts->pluck('temperature')->toArray();
+        $humidityData = $posts->pluck('humidity')->toArray();
+        $rainfallData = $posts->pluck('rainfall')->toArray();
+        $windspeedData = $posts->pluck('windspeed')->toArray();
+    
+        // Predicted data (aligned by date)
+        $predictedData = [];
+        foreach ($posts as $post) {
+            $prediction = $postPredicts->firstWhere('date', $post->date);
+            $predictedData[] = $prediction ? [
+                'temperature' => $prediction->temperature_predict,
+                'humidity' => $prediction->humidity_predict,
+                'rainfall' => $prediction->rainfall_predict,
+                'windspeed' => $prediction->windspeed_predict
+            ] : [
+                'temperature' => null,
+                'humidity' => null,
+                'rainfall' => null,
+                'windspeed' => null
+            ];
+        }
+    
+        // Extract predicted data
+        $temperaturePredictData = array_column($predictedData, 'temperature');
+        $humidityPredictData = array_column($predictedData, 'humidity');
+        $rainfallPredictData = array_column($predictedData, 'rainfall');
+        $windspeedPredictData = array_column($predictedData, 'windspeed');
+    
+        // Build weather charts
         $temperatureChart = $weatherChart->buildWeatherChart($temperatureData, $temperaturePredictData, $chartLabels, 'Temperature');
         $humidityChart = $weatherChart->buildWeatherChart($humidityData, $humidityPredictData, $chartLabels, 'Humidity');
         $rainfallChart = $weatherChart->buildWeatherChart($rainfallData, $rainfallPredictData, $chartLabels, 'Rainfall');
         $windspeedChart = $weatherChart->buildWeatherChart($windspeedData, $windspeedPredictData, $chartLabels, 'Windspeed');
+    
+        $title = 'History';
+        $active = 'history';
+    
+        return view('history', compact('provinces', 'temperatureChart', 'humidityChart', 'rainfallChart', 'windspeedChart', 'title', 'active', 'selectedProvinsi', 'selectedKabupaten', 'startDate', 'endDate'));
     }
-
-    $title = 'History';
-    $active = 'history';
-
-    return view('history', compact('provinces', 'temperatureChart', 'humidityChart', 'rainfallChart', 'windspeedChart', 'title', 'active', 'selectedProvinsi', 'selectedKabupaten', 'startDate', 'endDate'));
-}
+    
+    
 
     
     
