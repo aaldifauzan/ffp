@@ -9,7 +9,7 @@
         </div>
     @endif
 
-    <form action="{{ route('history') }}" method="GET">
+    <form id="historyForm" action="{{ route('history') }}" method="GET">
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="provinsi">Provinsi</label>
@@ -50,11 +50,11 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="start_date">Tanggal Awal:</label>
-                <input type="date" class="form-control" id="start_date" name="start_date" value="{{ old('start_date') ?? $startDate }}">
+                <input type="date" class="form-control" id="start_date" name="start_date" value="{{ old('start_date') ?? $startDate }}" required>
             </div>
             <div class="form-group col-md-6">
                 <label for="end_date">Tanggal Akhir:</label>
-                <input type="date" class="form-control" id="end_date" name="end_date" value="{{ old('end_date') ?? $endDate }}">
+                <input type="date" class="form-control" id="end_date" name="end_date" value="{{ old('end_date') ?? $endDate }}" required>
             </div>
         </div>
 
@@ -87,6 +87,18 @@
         {{ $windspeedChart->script() }}
     @endif
 </div>
+
+<script>
+    document.getElementById('historyForm').addEventListener('submit', function(event) {
+        var startDate = document.getElementById('start_date').value;
+        var endDate = document.getElementById('end_date').value;
+
+        if (!startDate || !endDate) {
+            alert('Please fill out both the start date and end date.');
+            event.preventDefault();
+        }
+    });
+</script>
 @endsection
 
 @section('styles')
