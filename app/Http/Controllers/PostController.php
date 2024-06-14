@@ -200,27 +200,33 @@ class PostController extends Controller
     }
     
     public function getFWIHistoryData(Request $request)
-{
-    $selectedProvinsi = $request->input('provinsi');
-    $selectedKabupaten = $request->input('kabupaten');
-    $startDate = $request->input('start_date');
-    $endDate = $request->input('end_date');
-
-    $response = Http::post('http://127.0.0.1:5000/api/fwi-data-all', [
-        'start_date' => $startDate,
-        'end_date' => $endDate,
-        'provinsi' => $selectedProvinsi,
-        'kabupaten' => $selectedKabupaten,
-    ]);
-
-    if ($response->successful()) {
-        return response()->json([
-            'status' => 'success',
-            'data' => $response->json()
-            
+    {
+        $selectedProvinsi = $request->input('provinsi');
+        $selectedKabupaten = $request->input('kabupaten');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+    
+        $response = Http::post('http://127.0.0.1:5000/api/fwi-data-all', [
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'provinsi' => $selectedProvinsi,
+            'kabupaten' => $selectedKabupaten,
         ]);
+    
+        if ($response->successful()) {
+            return response()->json([
+                'status' => 'success',
+                'data' => $response->json()
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No data found or an error occurred.'
+            ]);
+        }
     }
-}
+    
+    
 
     
 

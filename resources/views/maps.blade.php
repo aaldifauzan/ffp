@@ -2,6 +2,9 @@
 
 @section('container')
 <div class="container mt-4">
+    <!-- Tambahkan elemen div untuk pesan di bawah header -->
+    <div id="message-container"></div>
+    
     <form id="fwiForm">
         <div class="form-row">
             <div class="form-group col-md-6">
@@ -58,7 +61,7 @@
     <div class="row">
         <canvas id="fwiChart" width="800" height="200"></canvas>
     </div>
-    <div id="results"></div>    
+    <div id="results"></div>
 </div>
 
 <style>
@@ -78,6 +81,29 @@
         margin-right: 8px;
         opacity: 0.7;
     }
+    .alert {
+        margin-top: 20px;
+        padding: 10px;
+        border-radius: 5px;
+        position: relative;
+    }
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    .alert-error {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: transparent;
+        border: none;
+        font-size: 1.2em;
+        cursor: pointer;
+    }
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -94,7 +120,6 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 function onMapClick(e) {
-    // Perform reverse geocoding to get the province/regency name based on the clicked coordinates
     fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + e.latlng.lat + '&lon=' + e.latlng.lng)
         .then(response => response.json())
         .then(data => {
@@ -113,7 +138,6 @@ function onMapClick(e) {
         .catch(error => console.error('Error:', error));
 }
 
-// Adding click event listener to the map
 map.on('click', onMapClick);
 
 var charts = {};
@@ -191,10 +215,12 @@ function fetchFWIDataCurrent() {
             colorMapping = data.colorMapping;
             applyColorMapping();
         } else {
-            document.getElementById('results').innerHTML = '<p>' + data.message + '</p>';
+            showAlert(data.message, 'alert-error');
         }
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+        showAlert('An error occurred while fetching the data.', 'alert-error');
+    });
 }
 
 function fetchFWIData() {
@@ -216,13 +242,15 @@ function fetchFWIData() {
         if (data.status === 'success') {
             clearCharts();
             displayFWICharts(data.data);
+            showAlert('Data fetched successfully.', 'alert-success');
         } else {
-            document.getElementById('results').innerHTML = '<p>' + data.message + '</p>';
             clearCharts();
+            showAlert(data.message, 'alert-error');
         }
     })
     .catch(error => {
         clearCharts();
+        showAlert('An error occurred while fetching the data.', 'alert-error');
     });
 }
 
@@ -564,6 +592,27 @@ function getColor(d) {
            d > 6  ? '#FFFF00' :
            d > 1  ? '#00FF00' :
                     '#0E7AD1';
+}
+
+function showAlert(message, type) {
+    var messageContainer = document.getElementById('message-container');
+    messageContainer.innerHTML = '';
+
+    var alertElement = document.createElement('div');
+    alertElement.className = 'alert ' + type;
+    alertElement.role = 'alert';
+
+    var closeButton = document.createElement('button');
+    closeButton.className = 'close';
+    closeButton.innerHTML = '&times;';
+    closeButton.onclick = function() {
+        messageContainer.innerHTML = '';
+    };
+
+    alertElement.innerText = message;
+    alertElement.appendChild(closeButton);
+
+    messageContainer.appendChild(alertElement);
 }
 </script>
 
