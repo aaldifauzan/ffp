@@ -87,6 +87,22 @@ body {
   align-items: center;
 }
 
+
+.form-floating {
+  position: relative;
+}
+
+
+#toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+
+
 .logo-container {
   background-color: #ffffff; /* White background */
   border-radius: 50%; /* Perfectly round corners */

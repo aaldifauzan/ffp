@@ -30,6 +30,9 @@
     <!-- Custom styles for this template -->
     <link href="/css/dashboard.css" rel="stylesheet">
 
+    <link rel="icon" href="{{ asset('img\favicon.ico') }}">
+
+
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

@@ -52,6 +52,8 @@ public function index(Request $request)
     ]);
 }
 
+
+
 public function importCSV()
 {
     $provinces = Province::all();
@@ -385,23 +387,26 @@ public function store(Request $request)
     public function update(Request $request, Post $post)
     {
         $rules = [
+            'date' => 'required|date_format:Y-m-d',
             'provinsi' => 'required',
             'kabupaten' => 'required',
-            'temperature' => 'required',
-            'humidity' => 'required',
-            'rainfall' => 'required',
-            'windspeed' => 'required',
+            'temperature' => 'required|numeric',
+            'humidity' => 'required|numeric',
+            'rainfall' => 'required|numeric',
+            'windspeed' => 'required|numeric',
         ];
     
         $validatedData = $request->validate($rules);
-    
         $validatedData['user_id'] = auth()->user()->id;
+    
+        // Convert the date to the correct format for the database
+        $validatedData['date'] = date('Y-m-d', strtotime($request->date));
     
         // Update the post based on the model
         $post->update($validatedData);
     
-        return redirect()->route('dashboard.posts.show', ['province_id' => $post->provinsi, 'regency_id' => $post->kabupaten])
-        ->with('success', 'Post has been updated!');
+        return redirect()->route('dashboard.posts.show', ['province' => $post->provinsi, 'regency' => $post->kabupaten])
+            ->with('success', 'Post has been updated!');
     }
 
     /**

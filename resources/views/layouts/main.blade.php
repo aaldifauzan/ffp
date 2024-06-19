@@ -39,6 +39,10 @@
     {{-- My Style --}}
     <link rel="stylesheet" href="/css/style.css">
 
+    <link rel="icon" href="{{ asset('img\favicon.ico') }}">
+
+
+
     <title>Forest Fire Prediction | {{ $title }}</title>
   </head>
   <body>

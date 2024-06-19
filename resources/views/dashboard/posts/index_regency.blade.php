@@ -17,36 +17,33 @@
     </div>
     @endif
 
-    <div class="">
-        <a href="/dashboard/posts/create" class="btn btn-primary mb-3">Input Data Harian</a>
-        <a href="{{ route('dashboard.posts.importcsv') }}" class="btn btn-success mb-3">Import CSV</a>
-        <div class="table-responsive">
-            <table class="table table-striped table-sm">
-                <thead>
+    <div class="mb-3">
+        <a href="/dashboard/posts/create" class="btn btn-primary me-2">Input Data Harian</a>
+        <a href="{{ route('dashboard.posts.importcsv') }}" class="btn btn-success">Import CSV</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover table-bordered">
+            <thead>
                 <tr>
-                    <th scope="col">No.</th>
+                    <th scope="col" class="text-center" style="width: 5%;">No.</th>
                     <th scope="col">Kabupaten/Kota</th>
-                    <th scope="col">Action</th>
+                    <th scope="col" class="text-center">Action</th>
                 </tr>
-                </thead>
-                <tbody>
+            </thead>
+            <tbody>
                 @foreach ($regencies as $regency)
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
+                        <td class="text-center">{{ $loop->iteration }}</td>
                         <td>{{ $regency->name }}</td>
-                        <td>
+                        <td class="text-center">
                             <a href="{{ route('dashboard.posts.show', ['province' => $province->id, 'regency' => $regency->id]) }}" class="badge bg-info">
                                 <span data-feather="eye"></span>
                             </a>
-                            <form action="/dashboard/posts/" method="POST" class="d-inline">
-                              @method('delete')
-                              @csrf
-                            </form>
-                          </td>
+                        </td>
                     </tr>
                 @endforeach
-                </tbody>
-            </table>
-        </div>
+            </tbody>
+        </table>
     </div>
 @endsection

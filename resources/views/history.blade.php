@@ -58,7 +58,7 @@
             </div>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-block mb-4" style="width: 150px;">Submit</button>
+        <button type="submit" class="btn btn-primary btn-block mb-4">Submit</button>
     </form>
 
     @if(request()->hasAny(['provinsi', 'kabupaten', 'start_date', 'end_date']))
@@ -88,17 +88,6 @@
     @endif
 </div>
 
-<script>
-    document.getElementById('historyForm').addEventListener('submit', function(event) {
-        var startDate = document.getElementById('start_date').value;
-        var endDate = document.getElementById('end_date').value;
-
-        if (!startDate || !endDate) {
-            alert('Please fill out both the start date and end date.');
-            event.preventDefault();
-        }
-    });
-</script>
 @endsection
 
 @section('styles')
