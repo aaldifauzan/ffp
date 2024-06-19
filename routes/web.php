@@ -30,7 +30,7 @@ Route::post('/api/fwi-history', [PostController::class, 'getFWIHistoryData'])->n
 
 
 Route::get('/history', [PostController::class, 'history'])->name('history');
-Route::post('/getkota', [PostController::class, 'getkota'])->name('getkota');
+Route::post('getkota', [PostController::class, 'getkota'])->name('getkota');
 
 
 Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');

@@ -60,27 +60,34 @@
             $.ajaxSetup({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
             });
-        $(function(){
-            $('#provinsi').on('change', function(){
+            $('#provinsi').on('change', function() {
                 let id_provinsi = $('#provinsi').val();
             
                 $.ajax({
-                    type : 'POST',
-                    url : "{{route('getkota')}}",
-                    data : {id_provinsi:id_provinsi},
-                    cache : false,
-
-                    success: function(msg){
-                        $('#kabupaten').html(msg);
+                    type: 'POST',
+                    url: "http://127.0.0.1:5000/api/getkota",
+                    contentType: "application/json",
+                    data: JSON.stringify({ id_provinsi: id_provinsi }),
+                    cache: false,
+                    success: function(response) {
+                        let kabupatenDropdown = $('#kabupaten');
+                        kabupatenDropdown.empty(); // Clear previous options
+                        
+                        // Add default option
+                        kabupatenDropdown.append($('<option></option>').attr('value', '').text('-- Kabupaten/Kota --'));
+                        
+                        // Populate the dropdown with response data
+                        $.each(response, function(key, value) {
+                            kabupatenDropdown.append($('<option></option>').attr('value', value.id).text(value.name));
+                        });
                     },
-                    error: function(data){
-                        console.log('error:',data)
+                    error: function(data) {
+                        console.log('error:', data);
                     },
-                })
-
-            })
-        })
+                });
+            });
         });
     </script>
+
   </body>
 </html>

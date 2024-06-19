@@ -123,7 +123,7 @@ function onMapClick(e) {
     fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + e.latlng.lat + '&lon=' + e.latlng.lng)
         .then(response => response.json())
         .then(data => {
-            var address = data.address;
+            var address = data.address; 
             var province = address.state || address.city;
             var regency = address.city || address.town || address.county || address.village;
             var popupContent = "<strong>Province: </strong>" + province + "<br>" +
@@ -201,7 +201,7 @@ function loadAllData() {
 }
 
 function fetchFWIDataCurrent() {
-    fetch('{{ route('fwi-data-current') }}', {
+    fetch('http://127.0.0.1:5000/api/fwi-data-current', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -229,7 +229,7 @@ function fetchFWIData() {
     var startDate = document.getElementById('start_date').value;
     var endDate = document.getElementById('end_date').value;
 
-    fetch('{{ route('fwi-history') }}', {
+    fetch('http://127.0.0.1:5000/api/fwi-data-all', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

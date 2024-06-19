@@ -198,34 +198,7 @@ class PostController extends Controller
             ]);
         }
     }
-    
-    public function getFWIHistoryData(Request $request)
-    {
-        $selectedProvinsi = $request->input('provinsi');
-        $selectedKabupaten = $request->input('kabupaten');
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-    
-        $response = Http::post('http://127.0.0.1:5000/api/fwi-data-all', [
-            'start_date' => $startDate,
-            'end_date' => $endDate,
-            'provinsi' => $selectedProvinsi,
-            'kabupaten' => $selectedKabupaten,
-        ]);
-    
-        if ($response->successful()) {
-            return response()->json([
-                'status' => 'success',
-                'data' => $response->json()
-            ]);
-        } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'No data found or an error occurred.'
-            ]);
-        }
-    }
-    
+
     
 
     
@@ -320,12 +293,42 @@ class PostController extends Controller
     
 
     
-    
 
-
-    public function getkota(request $request)
+    public function getkota(Request $request)
     {
         $id_provinsi = $request->id_provinsi;
+    
+        // Make a POST request to the API
+        $response = Http::post('http://127.0.0.1:5000/api/getkota', [
+            'id_provinsi' => $id_provinsi,
+        ]);
+    
+        // Decode the JSON response into an associative array
+        $kabupatens = $response->json();
+    
+        // Start building the HTML string for options
+        $option = "<option>-- Kabupaten/Kota --</option>";
+    
+        // Ensure that kabupatens is an array and not null
+        if (is_array($kabupatens)) {
+            foreach ($kabupatens as $kabupaten) {
+                $option .= "<option value='{$kabupaten['id']}'>{$kabupaten['name']}</option>";
+            }
+        }
+    
+        // Return the options as a string (or you could return a view with this data)
+        return $option;
+    }
+
+
+    public function getkota2(request $request)
+    {
+
+        $id_provinsi = $request->id_provinsi;
+
+        $response = Http::post('http://127.0.0.1:5000/api/getkota', [
+            'id_provinsi' => $id_provinsi,
+        ]);
 
         $kabupatens = Regency::where('province_id', $id_provinsi)->get();
 
@@ -335,5 +338,4 @@ class PostController extends Controller
         }
         echo $option;
     }
-
 }

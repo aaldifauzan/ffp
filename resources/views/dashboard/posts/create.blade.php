@@ -40,9 +40,11 @@
                 @enderror
             </div>
 
+
             <div class="form-group">
                 <label for="exampleFormControlSelect2">Kabupaten/Kota</label>
                 <select class="form-control @error('kabupaten') is-invalid @enderror" id="kabupaten" name="kabupaten">
+                    <option value="" selected>-- Kabupaten/Kota --</option>
                 </select>
             </div>
         </div>
