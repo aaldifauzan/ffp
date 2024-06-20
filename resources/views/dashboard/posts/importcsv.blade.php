@@ -34,7 +34,7 @@
         <div class="form-group col-md-6">
             <label for="kabupaten">Kabupaten/Kota</label>
             <select class="form-control" id="kabupaten" name="kabupaten">
-                <!-- Options will be populated dynamically based on the selected province using JavaScript -->
+                <option value="">-- Kabupaten/Kota --</option>
             </select>
         </div>
     </div>
@@ -48,21 +48,19 @@
 </form>
 
 <script>
-    // Add an event listener to dynamically populate kabupaten based on the selected province
     document.getElementById('provinsi').addEventListener('change', function () {
         const provinsiId = this.value;
         const kabupatenSelect = document.getElementById('kabupaten');
 
-// Clear existing options
-kabupatenSelect.innerHTML = '<option value="">-- Kabupaten/Kota --</option>';
+        // Clear existing options
+        kabupatenSelect.innerHTML = '<option value="">-- Kabupaten/Kota --</option>';
 
-if (provinsiId) {
-    // Fetch and add kabupaten options based on the selected province using AJAX or another method
-    // You might need to implement this logic based on your application's structure
-    // For demonstration purposes, I'm leaving it as is.
-}
-});
+        if (provinsiId) {
+            // Fetch and add kabupaten options based on the selected province using AJAX or another method
+            // You might need to implement this logic based on your application's structure
+            // For demonstration purposes, I'm leaving it as is.
+        }
+    });
 </script>
 
 @endsection
-

@@ -5,6 +5,12 @@
     <h1 class="h2">Edit Data</h1>
 </div>
 
+@if(session()->has('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
 <div class="col-lg-8">
     <form method="post" action="{{ route('posts.update', ['post' => $post->id]) }}" class="mb-5">
         @method('put')
@@ -22,20 +28,14 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <label for="category" class="form-label">Province</label>
-                <select class="form-select" name="provinsi">
-                    @foreach ( $provinces as $provinsi )
-                        <option value="{{ $provinsi->id }}" {{ old('provinsi', $post->provinsi) == $provinsi->id ? 'selected' : '' }}>{{ $provinsi->name }}</option>
-                    @endforeach
-                </select>
+                <label for="province" class="form-label">Province</label>
+                <input type="text" class="form-control" readonly value="{{ $province->name }}">
+                <input type="hidden" name="provinsi" value="{{ $province->id }}">
             </div>
             <div class="col-md-6">
-                <label for="category" class="form-label">Kabupaten/Kota</label>
-                <select class="form-select" name="kabupaten">
-                    @foreach ($regencies as $kabupaten)
-                        <option value="{{ $kabupaten->id }}" {{ old('kabupaten', $post->kabupaten) == $kabupaten->id ? 'selected' : '' }}>{{ $kabupaten->name }}</option>
-                    @endforeach
-                </select>
+                <label for="regency" class="form-label">Kabupaten/Kota</label>
+                <input type="text" class="form-control" readonly value="{{ $regency->name }}">
+                <input type="hidden" name="kabupaten" value="{{ $regency->id }}">
             </div>
         </div>
         <div class="mb-3">
@@ -53,7 +53,6 @@
             @error('rainfall')
             <div class="invalid-feedback">
                 {{ $message }}
-            </div>
             @enderror
         </div>
         <div class="mb-3">

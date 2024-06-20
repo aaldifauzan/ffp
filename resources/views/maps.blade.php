@@ -2,7 +2,6 @@
 
 @section('container')
 <div class="container mt-4">
-    <!-- Tambahkan elemen div untuk pesan di bawah header -->
     <div id="message-container"></div>
     
     <form id="fwiForm">
@@ -211,11 +210,10 @@ function fetchFWIDataCurrent() {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.status === 'success') {
-            colorMapping = data.colorMapping;
-            applyColorMapping();
+        if (data) {
+            applyFetchedColorMapping(data);
         } else {
-            showAlert(data.message, 'alert-error');
+            showAlert('No data found', 'alert-error');
         }
     })
     .catch(error => {
@@ -242,6 +240,7 @@ function fetchFWIData() {
         if (data.status === 'success') {
             clearCharts();
             displayFWICharts(data.data);
+            applyFetchedColorMapping(data.data);
             showAlert('Data fetched successfully.', 'alert-success');
         } else {
             clearCharts();
@@ -531,6 +530,13 @@ function applyColorMapping() {
             }
         });
     }
+}
+
+function applyFetchedColorMapping(data) {
+    data.forEach(entry => {
+        colorMapping[entry.name] = getColor(entry.FWI);
+    });
+    applyColorMapping();
 }
 
 function zoomToSelectedArea(type, id) {
