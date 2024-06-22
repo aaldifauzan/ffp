@@ -94,12 +94,7 @@ public function handleCSVImport(Request $request)
     }
 }
 
-
-
-
-
-
-    
+ 
 
     /**
      * Show the form for creating a new resource.
@@ -227,7 +222,7 @@ public function store(Request $request)
         \Log::info('Training with Province ID: ' . $provinceId . ' and Regency ID: ' . $regencyId);
     
         // Define the endpoint for the API request
-        $endpoint = 'http://127.0.0.1:5000/train';
+        $endpoint = 'https://forestfirepredictionidn.cloud/predict/train';
     
         try {
             // Make the API request to Flask with increased timeout
@@ -269,7 +264,7 @@ public function store(Request $request)
         \Log::info('Forecasting with Province ID: ' . $provinceId . ' and Regency ID: ' . $regencyId);
     
         // Define the endpoint for the API request
-        $endpoint = 'http://127.0.0.1:8888/forecast';
+        $endpoint = 'https://forestfirepredictionidn.cloud/forecast';
     
         try {
             // Make the API request to Flask with increased timeout
@@ -301,54 +296,13 @@ public function store(Request $request)
         }
     }
 
-
-    public function fwi(Request $request)
-    {
-        $provinceId = $request->input('provinsi');
-        $regencyId = $request->input('kabupaten');
-    
-        \Log::info('FWI with Province ID: ' . $provinceId . ' and Regency ID: ' . $regencyId);
-    
-        // Define the endpoint for the API request
-        $endpoint = 'http://127.0.0.1:5000/fwi';
-    
-        try {
-            // Make the API request to Flask with increased timeout
-            $response = Http::timeout(120)->post($endpoint, [
-                'selectedProvinsi' => $provinceId,
-                'selectedKabupaten' => $regencyId,
-            ]);
-    
-            // Check if the response is successful
-            if ($response->successful()) {
-                $predictionData = $response->json();
-    
-                // Handle the prediction data as needed
-                foreach ($predictionData as $date => $data) {
-                    // Process the data, for example, store it in the database or display it in the view
-                }
-    
-                return redirect()->back()->with('success', 'FWI completed successfully.');
-            } else {
-                // Log the error message from the response
-                $errorMessage = $response->json()['error'] ?? 'Unknown error';
-                \Log::error('Forecast failed: ' . $errorMessage);
-                return redirect()->back()->with('error', 'FWI failed: ' . $errorMessage);
-            }
-        } catch (\Exception $e) {
-            // Log the exception message
-            \Log::error('Forecast failed: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'FWI failed: ' . $e->getMessage());
-        }
-    }
-    
     
     
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($provinceId, $regencyId, $postId)
+    public function edit($provinceId, $regencyId, $date)
     {
         // Retrieve the province and regency based on IDs
         $province = Province::find($provinceId);
@@ -359,12 +313,17 @@ public function store(Request $request)
             abort(404); // Handle the case when either the province or regency is not found
         }
         
-        // Fetch the post based on the post ID
-        $post = Post::find($postId);
+        // Fetch the post based on date, provinceId, and regencyId
+        $post = Post::where('date', $date)
+                    ->where('provinsi', $provinceId)
+                    ->where('kabupaten', $regencyId)
+                    ->first();
         
         // Check if the post exists
         if (!$post) {
-            return redirect()->route('dashboard.posts.index')->with('error', 'No data found for the specified post.');
+            // Redirect back to the specific URL with an error message
+            return redirect()->back()
+                             ->with('error', 'No data found in posts for the specified date, province, and regency.');
         }
         
         // Fetch all provinces and regencies
@@ -379,6 +338,8 @@ public function store(Request $request)
             'regencies' => $regencies,
         ]);
     }
+    
+    
     
     
     

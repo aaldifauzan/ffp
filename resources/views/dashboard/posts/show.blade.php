@@ -99,7 +99,7 @@
                     <td class="text-center px-1">{{ $fwi ? number_format($fwi->fwi, 5) : '-' }}</td>
                     <td class="text-center px-1">
                         <div class="d-flex justify-content-center">
-                            <a href="{{ route('dashboard.posts.edit', ['province_id' => $province->id, 'regency_id' => $regency->id, 'post_id' => $post1->id]) }}" class="badge bg-warning me-1">
+                            <a href="{{ route('dashboard.posts.edit', ['province_id' => $province->id, 'regency_id' => $regency->id, 'date' => $post1->date]) }}" class="badge bg-warning me-1">
                                 <span data-feather="edit"></span>
                             </a>
                             <form action="{{ route('dashboard.posts.destroy', ['date' => $post1->date, 'provinsi' => $post1->provinsi, 'kabupaten' => $post1->kabupaten]) }}" method="POST" class="d-inline">

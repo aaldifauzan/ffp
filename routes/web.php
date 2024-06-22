@@ -25,11 +25,13 @@ Route::get('/maps', [PostController::class, 'maps'])->name('maps');
 Route::post('/api/fwi-data-range', [PostController::class, 'getFWIDataRange'])->name('fwi-data-range');
 Route::post('/api/fwi-data-current', [PostController::class, 'getFWIDataCurrent'])->name('fwi-data-current');
 
-Route::post('/api/fwi-history', [PostController::class, 'getFWIHistoryData'])->name('fwi-history');
-
-
 
 Route::get('/history', [PostController::class, 'history'])->name('history');
+
+
+
+
+
 Route::post('getkota', [PostController::class, 'getkota'])->name('getkota');
 
 
@@ -60,10 +62,11 @@ Route::get('/dashboard/posts/province/{provinceId}', [DashboardPostController::c
     ->name('dashboard.posts.showRegenciesByProvince')
     ->middleware('auth');
 
-Route::get('/dashboard/posts/edit/{province_id}/{regency_id}/{post_id}', [DashboardPostController::class, 'edit'])
+Route::get('/dashboard/posts/edit/{province_id}/{regency_id}/{date}', [DashboardPostController::class, 'edit'])
     ->name('dashboard.posts.edit')
     ->middleware('auth');
 
+    
 
     Route::get('/dashboard/posts/show/{province_id}/{regency_id}', [DashboardPostController::class, 'show'])
     ->name('dashboard.posts.show')

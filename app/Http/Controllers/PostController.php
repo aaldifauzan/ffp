@@ -71,7 +71,7 @@ class PostController extends Controller
         $colorMapping = [];
     
         // Fetch initial FWI data for the current date
-        $currentFWIResponse = Http::post('http://127.0.0.1:5000/api/fwi-data-map', [
+        $currentFWIResponse = Http::post('https://forestfirepredictionidn.cloud/predict/api/fwi-data-map', [
             'date' => now()->format('Y-m-d'),
         ]);
     
@@ -124,7 +124,7 @@ class PostController extends Controller
         $selectedProvinsi = $request->input('provinsi');
         $selectedKabupaten = $request->input('kabupaten');
 
-        $response = Http::post('http://127.0.0.1:5000/api/fwi-data-all', [
+        $response = Http::post('https://forestfirepredictionidn.cloud/predict/api/fwi-data-all', [
             'start_date' => $startDate,
             'end_date' => $endDate,
             'provinsi' => $selectedProvinsi,
@@ -150,7 +150,7 @@ class PostController extends Controller
     {
         $date = $request->input('date', date('Y-m-d'));  // Default ke hari ini jika tanggal tidak disediakan
     
-        $response = Http::post('http://127.0.0.1:5000/api/fwi-data-current', [
+        $response = Http::post('https://forestfirepredictionidn.cloud/predict/api/fwi-data-current', [
             'date' => $date,
         ]);
     
@@ -212,71 +212,27 @@ class PostController extends Controller
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
     
-        // Set pagination limit
-        $paginationLimit = 1000; // Adjust as needed
+        // Fetch data from Flask backend
+        $response = Http::get('https://forestfirepredictionidn.cloud/predict/api/history', [
+            'provinsi' => $selectedProvinsi,
+            'kabupaten' => $selectedKabupaten,
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+        ]);
     
-        // Fetch actual data with pagination
-        $postsQuery = Post::query();
-        if ($selectedProvinsi) {
-            $postsQuery->where('provinsi', $selectedProvinsi);
-        }
-        if ($selectedKabupaten) {
-            $postsQuery->where('kabupaten', $selectedKabupaten);
-        }
-        if ($startDate && $endDate) {
-            $postsQuery->whereBetween('date', [$startDate, $endDate]);
-        }
-        $posts = $postsQuery->paginate($paginationLimit);
     
-        // Fetch predicted data with pagination
-        $postPredictsQuery = PostPredict::query();
-        if ($selectedProvinsi) {
-            $postPredictsQuery->where('provinsi', $selectedProvinsi);
-        }
-        if ($selectedKabupaten) {
-            $postPredictsQuery->where('kabupaten', $selectedKabupaten);
-        }
-        if ($startDate && $endDate) {
-            $postPredictsQuery->whereBetween('date', [$startDate, $endDate]);
-        }
-        $postPredicts = $postPredictsQuery->paginate($paginationLimit);
-    
-        // If no posts data found, set error message in session
-        if ($posts->isEmpty()) {
-            return redirect()->back()->with('error', 'No data found matching the provided filters.');
-        }
+        $data = $response->json();
     
         // Extract data for charts
-        $chartLabels = $posts->pluck('date')->toArray();
-    
-        // Actual data
-        $temperatureData = $posts->pluck('temperature')->toArray();
-        $humidityData = $posts->pluck('humidity')->toArray();
-        $rainfallData = $posts->pluck('rainfall')->toArray();
-        $windspeedData = $posts->pluck('windspeed')->toArray();
-    
-        // Predicted data (aligned by date)
-        $predictedData = [];
-        foreach ($posts as $post) {
-            $prediction = $postPredicts->firstWhere('date', $post->date);
-            $predictedData[] = $prediction ? [
-                'temperature' => $prediction->temperature_predict,
-                'humidity' => $prediction->humidity_predict,
-                'rainfall' => $prediction->rainfall_predict,
-                'windspeed' => $prediction->windspeed_predict
-            ] : [
-                'temperature' => null,
-                'humidity' => null,
-                'rainfall' => null,
-                'windspeed' => null
-            ];
-        }
-    
-        // Extract predicted data
-        $temperaturePredictData = array_column($predictedData, 'temperature');
-        $humidityPredictData = array_column($predictedData, 'humidity');
-        $rainfallPredictData = array_column($predictedData, 'rainfall');
-        $windspeedPredictData = array_column($predictedData, 'windspeed');
+        $chartLabels = array_column($data, 'date');
+        $temperatureData = array_column($data, 'temperature');
+        $temperaturePredictData = array_column($data, 'temperature_predict');
+        $humidityData = array_column($data, 'humidity');
+        $humidityPredictData = array_column($data, 'humidity_predict');
+        $rainfallData = array_column($data, 'rainfall');
+        $rainfallPredictData = array_column($data, 'rainfall_predict');
+        $windspeedData = array_column($data, 'windspeed');
+        $windspeedPredictData = array_column($data, 'windspeed_predict');
     
         // Build weather charts
         $temperatureChart = $weatherChart->buildWeatherChart($temperatureData, $temperaturePredictData, $chartLabels, 'Temperature');
@@ -289,17 +245,16 @@ class PostController extends Controller
     
         return view('history', compact('provinces', 'temperatureChart', 'humidityChart', 'rainfallChart', 'windspeedChart', 'title', 'active', 'selectedProvinsi', 'selectedKabupaten', 'startDate', 'endDate'));
     }
-    
-    
 
-    
+
+
 
     public function getkota(Request $request)
     {
         $id_provinsi = $request->id_provinsi;
     
         // Make a POST request to the API
-        $response = Http::post('http://127.0.0.1:5000/api/getkota', [
+        $response = Http::post('https://forestfirepredictionidn.cloud/predict/api/getkota', [
             'id_provinsi' => $id_provinsi,
         ]);
     
@@ -326,7 +281,7 @@ class PostController extends Controller
 
         $id_provinsi = $request->id_provinsi;
 
-        $response = Http::post('http://127.0.0.1:5000/api/getkota', [
+        $response = Http::post('https://forestfirepredictionidn.cloud/predict/api/getkota', [
             'id_provinsi' => $id_provinsi,
         ]);
 
