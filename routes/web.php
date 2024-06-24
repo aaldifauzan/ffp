@@ -87,8 +87,7 @@ Route::delete('/dashboard/posts/{post}', [DashboardPostController::class, 'destr
 
     Route::post('/train', [DashboardPostController::class, 'train'])->name('train');
 
-    Route::post('/forecast', [DashboardPostController::class, 'forecast'])->name('forecast');
-
+    Route::post('/dashboard/posts/forecast', [DashboardPostController::class, 'forecast'])->name('forecast');
 
 
 

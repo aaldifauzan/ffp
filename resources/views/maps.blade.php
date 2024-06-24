@@ -200,7 +200,7 @@ function loadAllData() {
 }
 
 function fetchFWIDataCurrent() {
-    fetch('http://127.0.0.1:5000/api/fwi-data-current', {
+    fetch('https://forestfirepredictionidn.cloud/predict/api/fwi-data-current', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -227,7 +227,7 @@ function fetchFWIData() {
     var startDate = document.getElementById('start_date').value;
     var endDate = document.getElementById('end_date').value;
 
-    fetch('http://127.0.0.1:5000/api/fwi-data-all', {
+    fetch('https://forestfirepredictionidn.cloud/predict/api/fwi-data-all', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

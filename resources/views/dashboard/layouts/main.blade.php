@@ -74,7 +74,7 @@
         
             $.ajax({
                 type: 'POST',
-                url: "http://127.0.0.1:5000/api/getkota",
+                url: "https://forestfirepredictionidn.cloud/predict/api/getkota",
                 contentType: "application/json",
                 data: JSON.stringify({ id_provinsi: id_provinsi }),
                 cache: false,

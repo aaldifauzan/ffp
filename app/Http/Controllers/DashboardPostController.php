@@ -219,7 +219,7 @@ public function store(Request $request)
         $provinceId = $request->input('provinsi');
         $regencyId = $request->input('kabupaten');
     
-        \Log::info('Training with Province ID: ' . $provinceId . ' and Regency ID: ' . $regencyId);
+        Log::info('Training with Province ID: ' . $provinceId . ' and Regency ID: ' . $regencyId);
     
         // Define the endpoint for the API request
         $endpoint = 'https://forestfirepredictionidn.cloud/predict/train';
@@ -255,46 +255,42 @@ public function store(Request $request)
     }
 
 
+public function forecast(Request $request)
+{
+    $provinceId = $request->input('selectedProvinsi');
+    $regencyId = $request->input('selectedKabupaten');
 
-    public function forecast(Request $request)
-    {
-        $provinceId = $request->input('provinsi');
-        $regencyId = $request->input('kabupaten');
-    
-        \Log::info('Forecasting with Province ID: ' . $provinceId . ' and Regency ID: ' . $regencyId);
-    
-        // Define the endpoint for the API request
-        $endpoint = 'https://forestfirepredictionidn.cloud/forecast';
-    
-        try {
-            // Make the API request to Flask with increased timeout
-            $response = Http::timeout(120)->post($endpoint, [
-                'selectedProvinsi' => $provinceId,
-                'selectedKabupaten' => $regencyId,
-            ]);
-    
-            // Check if the response is successful
-            if ($response->successful()) {
-                $predictionData = $response->json();
-    
-                // Handle the prediction data as needed
-                foreach ($predictionData as $date => $data) {
-                    // Process the data, for example, store it in the database or display it in the view
-                }
-    
-                return redirect()->back()->with('success', 'Forecast completed successfully.');
-            } else {
-                // Log the error message from the response
-                $errorMessage = $response->json()['error'] ?? 'Unknown error';
-                \Log::error('Forecast failed: ' . $errorMessage);
-                return redirect()->back()->with('error', 'Forecast failed: ' . $errorMessage);
-            }
-        } catch (\Exception $e) {
-            // Log the exception message
-            \Log::error('Forecast failed: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Forecast failed: ' . $e->getMessage());
+    \Log::info('Received inputs for forecast - Province ID: ' . $provinceId . ', Regency ID: ' . $regencyId);
+
+    $endpoint = 'https://forestfirepredictionidn.cloud/forecast';
+
+    try {
+        $response = Http::timeout(120)->get($endpoint, [
+            'selectedProvinsi' => $provinceId,
+            'selectedKabupaten' => $regencyId,
+        ]);
+
+        \Log::info('Sending request to API endpoint with data - Province ID: ' . $provinceId . ', Regency ID: ' . $regencyId);
+
+        if ($response->successful()) {
+            $predictionData = $response->json();
+            return redirect()->back()->with('success', 'Forecast completed successfully.');
+        } else {
+            $errorMessage = $response->json()['error'] ?? 'Unknown error';
+            $errorDetails = $response->json()['details'] ?? 'No additional details';
+            \Log::error('Forecast failed: ' . $errorMessage . '. Details: ' . $errorDetails);
+            return redirect()->back()->with('error', 'Forecast failed: ' . $errorMessage . '. Details: ' . $errorDetails);
         }
+    } catch (\Exception $e) {
+        \Log::error('Forecast failed: ' . $e->getMessage());
+        return redirect()->back()->with('error', 'Forecast failed: ' . $e->getMessage());
     }
+}
+
+
+
+
+
 
     
     

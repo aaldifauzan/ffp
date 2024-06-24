@@ -38,12 +38,14 @@
 
         <form action="{{ route('forecast') }}" method="POST" class="d-inline">
             @csrf
-            <input type="hidden" name="provinsi" value="{{ $province->id }}">
-            <input type="hidden" name="kabupaten" value="{{ $regency->id }}">
+            <input type="hidden" name="selectedProvinsi" value="{{ $province->id }}">
+            <input type="hidden" name="selectedKabupaten" value="{{ $regency->id }}">
             <button type="submit" class="btn btn-danger">Forecast</button>
         </form>
+
     </div>
 </div>
+
 
 <div class="table-responsive">
     <table class="table table-striped table-hover table-bordered">
