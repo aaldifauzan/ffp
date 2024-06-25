@@ -164,48 +164,60 @@ public function store(Request $request)
      */
 
 
-     public function show($provinceId, $regencyId)
-     {
-         $province = Province::find($provinceId);
-         $regency = Regency::find($regencyId);
-     
-         if (!$province || !$regency) {
-             abort(404);
-         }
-     
-         $postsQuery1 = Post::where('provinsi', $provinceId)->where('kabupaten', $regencyId)->orderBy('date', 'desc');
-         $postsQuery2 = PostPredict::where('provinsi', $provinceId)->where('kabupaten', $regencyId)->orderBy('date', 'desc');
-         $postsQuery3 = Fwi::where('provinsi', $provinceId)->where('kabupaten', $regencyId);
-     
-         $posts1 = $postsQuery1->get();
-         $posts2 = $postsQuery2->get();
-         $posts3 = $postsQuery3->get();
-     
-         if ($posts1->isEmpty() && $posts2->isEmpty()) {
-             return redirect()->route('dashboard.posts.index')->with('error', 'No data found for the specified province and regency.');
-         }
-     
-         // If posts1 is empty, use posts2 for display
-         if ($posts1->isEmpty()) {
-             $posts1 = $posts2;
-         }
-     
-         $combinedPosts = $posts1->merge($posts2)->unique('date')->sortByDesc('date');
-     
-         $perPage = 50;
-         $currentPage = LengthAwarePaginator::resolveCurrentPage();
-         $currentItems = $combinedPosts->slice(($currentPage - 1) * $perPage, $perPage)->all();
-         $paginatedCombinedPosts = new LengthAwarePaginator($currentItems, $combinedPosts->count(), $perPage);
-         $paginatedCombinedPosts->setPath(route('dashboard.posts.show', ['province' => $provinceId, 'regency' => $regencyId]));
-     
-         return view('dashboard.posts.show', [
-             'province' => $province,
-             'regency' => $regency,
-             'posts1' => $paginatedCombinedPosts,
-             'posts2' => $posts2,
-             'posts3' => $posts3,
-         ]);
-     }
+public function show($provinceId, $regencyId, Request $request)
+{
+    $province = Province::find($provinceId);
+    $regency = Regency::find($regencyId);
+
+    if (!$province || !$regency) {
+        abort(404);
+    }
+
+    $sortOrder = $request->input('sortOrder', 'desc');
+    $sortColumn = $request->input('sortColumn', 'date');
+    $orderDirection = $sortOrder === 'asc' ? 'asc' : 'desc';
+
+    $postsQuery1 = Post::where('provinsi', $provinceId)->where('kabupaten', $regencyId)->orderBy($sortColumn, $orderDirection);
+    $postsQuery2 = PostPredict::where('provinsi', $provinceId)->where('kabupaten', $regencyId)->orderBy($sortColumn, $orderDirection);
+    $postsQuery3 = Fwi::where('provinsi', $provinceId)->where('kabupaten', $regencyId)->orderBy($sortColumn, $orderDirection);
+
+    $posts1 = $postsQuery1->get();
+    $posts2 = $postsQuery2->get();
+    $posts3 = $postsQuery3->get();
+
+    if ($posts1->isEmpty() && $posts2->isEmpty()) {
+        return redirect()->route('dashboard.posts.index')->with('error', 'No data found for the specified province and regency.');
+    }
+
+    if ($posts1->isEmpty()) {
+        $posts1 = $posts2;
+    }
+
+    $combinedPosts = $posts1->merge($posts2)->unique('date')->sortBy('date', SORT_REGULAR, $orderDirection === 'desc');
+
+    $perPage = 50;
+    $currentPage = LengthAwarePaginator::resolveCurrentPage();
+    $currentItems = $combinedPosts->slice(($currentPage - 1) * $perPage, $perPage)->all();
+    $paginatedCombinedPosts = new LengthAwarePaginator($currentItems, $combinedPosts->count(), $perPage);
+    $paginatedCombinedPosts->setPath(route('dashboard.posts.show', ['province' => $provinceId, 'regency' => $regencyId, 'sortOrder' => $sortOrder, 'sortColumn' => $sortColumn]));
+
+    return view('dashboard.posts.show', [
+        'province' => $province,
+        'regency' => $regency,
+        'posts1' => $paginatedCombinedPosts,
+        'posts2' => $posts2,
+        'posts3' => $posts3,
+        'sortOrder' => $sortOrder,
+        'sortColumn' => $sortColumn,
+    ]);
+}
+
+
+
+
+
+
+
      
      
     

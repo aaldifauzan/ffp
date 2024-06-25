@@ -582,6 +582,10 @@ legend.onAdd = function (map) {
         labels = [];
 
     div.innerHTML = '<strong>FWI Index</strong><br>';
+
+    // Tambahkan entri untuk No Data
+    div.innerHTML += '<i style="background:#A2A19F"></i> No Data<br>';
+
     for (var i = 0; i < grades.length; i++) {
         div.innerHTML +=
             '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
@@ -594,11 +598,13 @@ legend.onAdd = function (map) {
 legend.addTo(map);
 
 function getColor(d) {
-    return d > 13 ? '#FF0000' :
+    return d === null || d === undefined ? '#A2A19F' :  // Kondisi untuk No Data
+           d > 13 ? '#FF0000' :
            d > 6  ? '#FFFF00' :
            d > 1  ? '#00FF00' :
                     '#0E7AD1';
 }
+
 
 function showAlert(message, type) {
     var messageContainer = document.getElementById('message-container');

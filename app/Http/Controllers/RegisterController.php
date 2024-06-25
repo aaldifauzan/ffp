@@ -24,11 +24,14 @@ class RegisterController extends Controller
             'email' => 'required|email:dns|unique:users',
             'password' => [ 'required', Password::min(8)->mixedCase()->letters()->numbers()->symbols()->uncompromised()]
         ]);
-
+    
         $validatedData['password'] = Hash::make($validatedData['password']);
-
-        User::create($validatedData);
-        // $request->session()->flash('success', 'Registration sucessfull! Please login.');
-        return redirect('/login')->with('success', 'Registration sucessfull! Please login.');
+    
+        try {
+            User::create($validatedData);
+            return redirect('/login')->with('success', 'Registration successful! Please login.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'You do not have access to register.');
+        }
     }
 }

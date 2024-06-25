@@ -7,6 +7,12 @@
         <main class="form-registration shadow p-3 mb-5 bg-white rounded">
             <h1 class="h3 fw-normal text-left"><span style="font-weight: bold;">Registration Form</span></h1>
 
+            @if(session()->has('error'))
+                <div class="alert alert-danger" role="alert">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             <div class="mb-3 text-left">
                 <small class="d-block">Your personal data is safe with us.</small>
             </div>

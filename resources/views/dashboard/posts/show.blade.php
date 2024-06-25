@@ -17,6 +17,20 @@
 </div>
 @endif
 
+<style>
+    .sort-link {
+        color: inherit; /* Inherits the color from parent */
+        text-decoration: none; /* Removes the underline */
+    }
+    .sort-link:hover {
+        color: inherit; /* Inherits the color from parent */
+        text-decoration: none; /* Removes the underline */
+    }
+    .sort-icon {
+        margin-left: 5px;
+    }
+</style>
+
 <div class="mb-3 d-flex justify-content-between align-items-center">
     <div class="btn-group" role="group">
         <form action="/dashboard/posts/create" method="GET" class="d-inline">
@@ -42,32 +56,29 @@
             <input type="hidden" name="selectedKabupaten" value="{{ $regency->id }}">
             <button type="submit" class="btn btn-danger">Forecast</button>
         </form>
-
     </div>
 </div>
-
 
 <div class="table-responsive">
     <table class="table table-striped table-hover table-bordered">
         <thead>
             <tr>
                 <th scope="col" class="text-center px-1" style="width: 4%;">No.</th>
-                <th scope="col" class="text-center px-1" style="width: 5%; white-space: nowrap;">Date</th>
-                <th scope="col" class="text-center px-1" style="width: 3%;">Temperature</th>
-                <th scope="col" class="text-center px-1" style="width: 3%;">Temperature Predict</th>
-                <th scope="col" class="text-center px-1" style="width: 3%;">Humidity</th>
-                <th scope="col" class="text-center px-1" style="width: 3%;">Humidity Predict</th>
-                <th scope="col" class="text-center px-1" style="width: 3%;">Rainfall</th>
-                <th scope="col" class="text-center px-1" style="width: 3%;">Rainfall Predict</th>
-                <th scope="col" class="text-center px-1" style="width: 3%;">Windspeed</th>
-                <th scope="col" class="text-center px-1" style="width: 3%;">Windspeed Predict</th>
-                <th scope="col" class="text-center px-1" style="width: 3%;">FFMC</th>
-                <th scope="col" class="text-center px-1" style="width: 3%;">DMC</th>
-                <th scope="col" class="text-center px-1" style="width: 3%;">DC</th>
-                <th scope="col" class="text-center px-1" style="width: 3%;">ISI</th>
-                <th scope="col" class="text-center px-1" style="width: 3%;">BUI</th>
-                <th scope="col" class="text-center px-1" style="width: 3%;">FWI</th>
-                <th scope="col" class="text-center px-1" style="width: 8%;">Action</th>
+                @php
+                    $columns = ['date' => 'Date', 'temperature' => 'Temperature', 'temperature_predict' => 'Temperature Predict', 'humidity' => 'Humidity', 'humidity_predict' => 'Humidity Predict', 'rainfall' => 'Rainfall', 'rainfall_predict' => 'Rainfall Predict', 'windspeed' => 'Windspeed', 'windspeed_predict' => 'Windspeed Predict', 'ffmc' => 'FFMC', 'dmc' => 'DMC', 'dc' => 'DC', 'isi' => 'ISI', 'bui' => 'BUI', 'fwi' => 'FWI', 'action' => 'Action'];
+                @endphp
+                @foreach ($columns as $column => $title)
+                    <th scope="col" class="text-center px-1" style="width: 5%; white-space: nowrap; padding-right: 10px;">
+                        <a href="{{ route('dashboard.posts.show', ['province' => $province->id, 'regency' => $regency->id, 'sortColumn' => $column, 'sortOrder' => $sortOrder === 'asc' ? 'desc' : 'asc']) }}" class="sort-link" style="display: inline-flex; align-items: center;">
+                            {{ $title }}
+                            @if($sortColumn === $column)
+                                <span class="sort-icon">
+                                    <i class="fa fa-sort-{{ $sortOrder === 'asc' ? 'up' : 'down' }}" style="{{ $sortOrder === 'asc' ? 'color: #006400;' : 'color: green;' }}; line-height: 0.1;"></i>
+                                </span>
+                            @endif
+                        </a>
+                    </th>
+                @endforeach
             </tr>
         </thead>
         <tbody>
@@ -122,5 +133,4 @@
 <div class="mt-3 d-flex justify-content-center">
     {{ $posts1->links() }}
 </div>
-
 @endsection

@@ -41,14 +41,6 @@ class PostController extends Controller
         ]);
     }
 
-    // public function maps()
-    // {
-    //     return view('maps',[
-    //         "title" => "Maps",
-    //         "active" => 'maps'
-    //     ]);
-    // }
-
     public function maps(Request $request)
     {
         $provinces = Province::all();
@@ -198,10 +190,6 @@ class PostController extends Controller
             ]);
         }
     }
-
-    
-
-    
 
 
     public function history(Request $request, WeatherChart $weatherChart)
